@@ -202,7 +202,7 @@ protected:
 
 class cDynamicTrack {
 public:
-    cDynamicTrack(char *aPort, unsigned aBaudRate) {
+    cDynamicTrack(const char *aPort, unsigned aBaudRate) {
         vn200_connect(&VectorNav200, aPort, aBaudRate);
     }
 

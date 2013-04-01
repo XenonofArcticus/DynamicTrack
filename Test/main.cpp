@@ -22,7 +22,7 @@ int main() {
     cDTPODParameter<unsigned> gpsFixParam("Orient.GPS.Fix", dynamicTrack);
 
     for (int i = 0; i < 256; i++) {
-        // Capture the data from the last device sync in the DT shadow area.
+        // Capture the data from the last device sync in the DTs shadow area.
         dynamicTrack.CaptureDeviceParameters();
         double latitude, ypr;
         int yawInt;
