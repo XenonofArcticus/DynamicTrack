@@ -203,7 +203,7 @@ protected:
 class cDynamicTrack {
 public:
     cDynamicTrack(const char *aPort, unsigned aBaudRate) {
-        vn200_connect(&VectorNav200, aPort, aBaudRate);
+        ValidConnection = VNERR_NO_ERROR == vn200_connect(&VectorNav200, aPort, aBaudRate);
     }
 
     ~cDynamicTrack() {
@@ -212,7 +212,10 @@ public:
     }
 
     nDTStatus::eDTStatus AddParameter(std::string &aParameterName, cDTParameter *aParameter) {
-        do {
+        if (!ValidConnection) {
+            return nDTStatus::eDeviceMissing;
+        }
+        while (1) {
             if ("Pos.Altitude" == aParameterName) {
                 aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, latitudeLongitudeAltitude.c2));
                 break;
@@ -242,7 +245,7 @@ public:
                 break;
             }
             return nDTStatus::eUnknownParameter;
-        } while (0);
+        };
 
         ParameterList.push_back(aParameter);
         return nDTStatus::eSuccess;
@@ -253,16 +256,23 @@ public:
     }
 
     void CaptureDeviceParameters() {
-        Vn200CompositeData currentData;
-        vn200_getCurrentAsyncData(&VectorNav200, &currentData);
+        if (ValidConnection) {
+            Vn200CompositeData currentData;
+            vn200_getCurrentAsyncData(&VectorNav200, &currentData);
 
-        std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
-        for (; ParameterList.end() != parameter; parameter++) {
-            (*parameter)->LoadData((void *)&currentData);
+            std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+            for (; ParameterList.end() != parameter; parameter++) {
+                (*parameter)->LoadData((void *)&currentData);
+            }
         }
     }
 
+    bool ConnectionValid () {
+        return ValidConnection;
+    }
+
 protected:
+    bool ValidConnection;
     Vn200 VectorNav200;
     std::list<cDTParameter *> ParameterList;
 
