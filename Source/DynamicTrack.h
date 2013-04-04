@@ -244,6 +244,18 @@ public:
                 aParameter->AlignParameter(&RetrieveUCharField, offsetof(Vn200CompositeData, gpsFix));
                 break;
             }
+            if ("Motion.Velocity.NEDVelN" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, velocity.c0));
+                break;
+            }
+            if ("Motion.Velocity.NEDVelE" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, velocity.c1));
+                break;
+            }
+            if ("Motion.Velocity.NEDVelD" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, velocity.c2));
+                break;
+            }
             return nDTStatus::eUnknownParameter;
         };
 
