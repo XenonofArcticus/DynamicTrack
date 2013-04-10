@@ -25,7 +25,7 @@ SET(CMAKE_DEBUG_POSTFIX d)
 
 set(Boost_USE_STATIC_LIBS   ON)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS serialization timer REQUIRED)
 
 link_directories(${LIBRARY_OUTPUT_PATH})
 
@@ -34,6 +34,6 @@ aux_source_directory(. SRC_LIST)
 include_directories(${Boost_INCLUDE_DIRS} ../DeviceSDKs/VectorNav/CLib0.2/include ../Source)
 
 add_executable(DTTest ${SRC_LIST})
-target_link_libraries(DTTest DTLibraryd VNavLibd)
+target_link_libraries(DTTest DTLibraryd VNavLibd ${Boost_SERIALIZATION_LIBRARY} ${Boost_TIMER_LIBRARY})
 
 

@@ -1,8 +1,15 @@
 #ifndef DYNAMICTRACK_H
 #define DYNAMICTRACK_H
 
+#include <fstream>
+
+// include headers that implement a archive in simple text format
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/timer.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/signals2.hpp>
+
 #include <iostream>
 
 #include <vectornav.h>
@@ -200,9 +207,75 @@ protected:
     tType DeviceValue;
 };
 
+class cINSLoggedData {
+public:
+    cINSLoggedData() {}
+    cINSLoggedData(Vn200CompositeData &aAllData, double aElapsedTime)
+        : ElapsedTime(aElapsedTime),
+          LatitudeLongitudeAltitude(aAllData.latitudeLongitudeAltitude),
+          NEDVelocity(aAllData.velocity),
+          YawPitchRoll(aAllData.ypr) {
+    }
+
+    double GetElapsedTime() {
+        return ElapsedTime;
+    }
+
+    void GetINSData(Vn200CompositeData &aDataStruct) {
+        aDataStruct.latitudeLongitudeAltitude = LatitudeLongitudeAltitude;
+        aDataStruct.velocity = NEDVelocity;
+        aDataStruct.ypr = YawPitchRoll;
+    }
+
+    bool Interpolate(cINSLoggedData &aLastCapture, double aElapsedTime) {
+        if (aElapsedTime < ElapsedTime || ElapsedTime > aLastCapture.ElapsedTime) {
+            return false;
+        }
+        double slope = (aElapsedTime - ElapsedTime) / (aLastCapture.ElapsedTime - ElapsedTime);
+
+        LatitudeLongitudeAltitude.c0 = InterpolateCalculation(slope, LatitudeLongitudeAltitude.c0, aLastCapture.LatitudeLongitudeAltitude.c0);
+        LatitudeLongitudeAltitude.c1 = InterpolateCalculation(slope, LatitudeLongitudeAltitude.c1, aLastCapture.LatitudeLongitudeAltitude.c1);
+        LatitudeLongitudeAltitude.c2 = InterpolateCalculation(slope, LatitudeLongitudeAltitude.c2, aLastCapture.LatitudeLongitudeAltitude.c2);
+        NEDVelocity.c0 = InterpolateCalculation(slope, NEDVelocity.c0, aLastCapture.NEDVelocity.c0);
+        NEDVelocity.c1 = InterpolateCalculation(slope, NEDVelocity.c1, aLastCapture.NEDVelocity.c1);
+        NEDVelocity.c2 = InterpolateCalculation(slope, NEDVelocity.c2, aLastCapture.NEDVelocity.c2);
+        YawPitchRoll.yaw = InterpolateCalculation(slope, YawPitchRoll.yaw, aLastCapture.YawPitchRoll.yaw);
+        YawPitchRoll.pitch = InterpolateCalculation(slope, YawPitchRoll.pitch, aLastCapture.YawPitchRoll.pitch);
+        YawPitchRoll.roll = InterpolateCalculation(slope, YawPitchRoll.roll, aLastCapture.YawPitchRoll.roll);
+
+        return true;
+    }
+
+protected:
+    friend class boost::serialization::access;
+
+    double InterpolateCalculation(double aSlope, double aFirstValue, double aSecondValue) {
+        return (aSlope * (aSecondValue - aFirstValue)) + aFirstValue;
+    }
+
+    template <class Archive> void serialize(Archive &aArchive, const unsigned int) {
+        aArchive & ElapsedTime;
+        aArchive & LatitudeLongitudeAltitude.c0;
+        aArchive & LatitudeLongitudeAltitude.c1;
+        aArchive & LatitudeLongitudeAltitude.c2;
+        aArchive & NEDVelocity.c0;
+        aArchive & NEDVelocity.c1;
+        aArchive & NEDVelocity.c2;
+        aArchive & YawPitchRoll.yaw;
+        aArchive & YawPitchRoll.pitch;
+        aArchive & YawPitchRoll.roll;
+    }
+
+    VnYpr YawPitchRoll;
+    VnVector3 LatitudeLongitudeAltitude;
+    VnVector3 NEDVelocity;
+    double ElapsedTime;
+};
+
 class cDynamicTrack {
 public:
-    cDynamicTrack(const char *aPort, unsigned aBaudRate) {
+    cDynamicTrack(const char *aPort, unsigned aBaudRate)
+        : ArchiveOutput(0), DataLogInEn(false), DataLogOutEn(false), LastInputCaptureValid (false) {
         ValidConnection = VNERR_NO_ERROR == vn200_connect(&VectorNav200, aPort, aBaudRate);
     }
 
@@ -212,9 +285,6 @@ public:
     }
 
     nDTStatus::eDTStatus AddParameter(std::string &aParameterName, cDTParameter *aParameter) {
-        if (!ValidConnection) {
-            return nDTStatus::eDeviceMissing;
-        }
         while (1) {
             if ("Pos.Altitude" == aParameterName) {
                 aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, latitudeLongitudeAltitude.c2));
@@ -260,15 +330,65 @@ public:
         };
 
         ParameterList.push_back(aParameter);
+
+        if (!ValidConnection) {
+            return nDTStatus::eDeviceMissing;
+        }
         return nDTStatus::eSuccess;
+    }
+
+    void DisbleInputLogging() {
+        if (ArchiveInput) {
+            delete ArchiveInput;
+            ArchiveInput = 0;
+            InputStream.close();
+        }
+        DataLogInEn = false;
+    }
+    bool SetInputLogging(std::string &aFilePath) {
+        if (DataLogOutEn) {
+            return false;
+        }
+
+        InputStream.open(aFilePath);
+        if (InputStream.is_open()) {
+            ArchiveInput = new boost::archive::text_iarchive(InputStream);
+            DataLogInEn = true;
+            ElapsedTimer.restart();
+            LastInputCaptureValid = false;
+        }
+    }
+
+    void DisbleOutputLogging() {
+        if (ArchiveOutput) {
+            delete ArchiveOutput;
+            ArchiveOutput = 0;
+            OutputStream.close();
+        }
+        DataLogOutEn = false;
+    }
+    bool SetOutputLogging(std::string &aFilePath) {
+        if (DataLogInEn) {
+            return false;
+        }
+
+        OutputStream.open(aFilePath);
+        if (OutputStream.is_open()) {
+            ArchiveOutput = new boost::archive::text_oarchive(OutputStream);
+            DataLogOutEn = true;
+            ElapsedTimer.restart();
+            return true;
+        }
+        return false;
     }
 
     void RemoveParameter(cDTParameter *aDTParamter) {
         ParameterList.remove(aDTParamter);
     }
 
-    void CaptureDeviceParameters() {
+    bool CaptureDeviceParameters() {
         if (ValidConnection) {
+            // New data is retrieved from the INS device.
             Vn200CompositeData currentData;
             vn200_getCurrentAsyncData(&VectorNav200, &currentData);
 
@@ -276,7 +396,82 @@ public:
             for (; ParameterList.end() != parameter; parameter++) {
                 (*parameter)->LoadData((void *)&currentData);
             }
+
+            if (DataLogOutEn) {
+                const cINSLoggedData loggedData(currentData, ElapsedTimer.elapsed());
+                *ArchiveOutput << loggedData;
+            }
         }
+        else if (DataLogInEn) {
+            // New data is input via a log file;
+            const double elapsedTime = ElapsedTimer.elapsed();
+
+            cINSLoggedData stashedCapture;
+
+            if (!LastInputCaptureValid) {
+                *ArchiveInput >> stashedCapture;
+
+                if (LastInputCapture.GetElapsedTime() > elapsedTime) {
+                    // The current elapsed time is before the first data
+                    //  capture occurred, thus return the first capture.
+                    Vn200CompositeData currentData;
+                    LastInputCapture.GetINSData(currentData);
+                    std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+                    for (; ParameterList.end() != parameter; parameter++) {
+                        (*parameter)->LoadData((void *)&currentData);
+                    }
+                    return false;
+                }
+                *ArchiveInput >> LastInputCapture;
+                LastInputCaptureValid = true;
+            }
+            else if (LastInputCapture.GetElapsedTime() < elapsedTime) {
+                stashedCapture = LastInputCapture;
+                *ArchiveInput >> LastInputCapture;
+            }
+            else {
+                // The current elapsed time is before the first data
+                //  capture occurred, thus return the first capture.
+                *ArchiveInput >> LastInputCapture;
+                LastInputCaptureValid = true;
+
+                Vn200CompositeData currentData;
+                LastInputCapture.GetINSData(currentData);
+                std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+                for (; ParameterList.end() != parameter; parameter++) {
+                    (*parameter)->LoadData((void *)&currentData);
+                }
+                return false;
+            }
+
+            while (LastInputCapture.GetElapsedTime() < elapsedTime) {
+                if (InputStream.eof()) {
+                    // The end of the stream was reached, return the last data captured
+                    Vn200CompositeData currentData;
+                    LastInputCapture.GetINSData(currentData);
+                    std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+                    for (; ParameterList.end() != parameter; parameter++) {
+                        (*parameter)->LoadData((void *)&currentData);
+                    }
+                    return false;
+                }
+                stashedCapture = LastInputCapture;
+                *ArchiveInput >> LastInputCapture;
+            }
+
+            // Stashed capture should now point to data prior to elapsedTime,
+            //  and LastInputCapture should point to after. Allowing the
+            //  actual to be interpolated, assuming an adequate sample rate.
+            stashedCapture.Interpolate(LastInputCapture, elapsedTime);
+            Vn200CompositeData currentData;
+
+            stashedCapture.GetINSData(currentData);
+            std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+            for (; ParameterList.end() != parameter; parameter++) {
+                (*parameter)->LoadData((void *)&currentData);
+            }
+        }
+        return true;
     }
 
     bool ConnectionValid () {
@@ -285,6 +480,17 @@ public:
 
 protected:
     bool ValidConnection;
+    bool DataLogInEn;
+    bool DataLogOutEn;
+    bool LastInputCaptureValid;
+
+    boost::archive::text_iarchive *ArchiveInput;
+    boost::archive::text_oarchive *ArchiveOutput;
+    boost::timer ElapsedTimer;
+    std::ifstream InputStream;
+    cINSLoggedData LastInputCapture;
+    std::ofstream OutputStream;
+
     Vn200 VectorNav200;
     std::list<cDTParameter *> ParameterList;
 
