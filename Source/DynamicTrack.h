@@ -210,8 +210,10 @@ protected:
 class cINSLoggedData {
 public:
     cINSLoggedData() {}
-    cINSLoggedData(Vn200CompositeData &aAllData, double aElapsedTime)
+    cINSLoggedData(Vn200CompositeData &aAllData, double aElapsedTime,
+                   bool aLastDataPoint = false)
         : ElapsedTime(aElapsedTime),
+          LastDataPoint(aLastDataPoint),
           LatitudeLongitudeAltitude(aAllData.latitudeLongitudeAltitude),
           NEDVelocity(aAllData.velocity),
           YawPitchRoll(aAllData.ypr) {
@@ -246,6 +248,13 @@ public:
         return true;
     }
 
+    bool IsLastDatapoint() {
+        return LastDataPoint;
+    }
+    void SetLastDatapoint() {
+        LastDataPoint = true;
+    }
+
 protected:
     friend class boost::serialization::access;
 
@@ -254,6 +263,7 @@ protected:
     }
 
     template <class Archive> void serialize(Archive &aArchive, const unsigned int) {
+        aArchive & LastDataPoint;
         aArchive & ElapsedTime;
         aArchive & LatitudeLongitudeAltitude.c0;
         aArchive & LatitudeLongitudeAltitude.c1;
@@ -266,6 +276,7 @@ protected:
         aArchive & YawPitchRoll.roll;
     }
 
+    bool LastDataPoint;
     VnYpr YawPitchRoll;
     VnVector3 LatitudeLongitudeAltitude;
     VnVector3 NEDVelocity;
@@ -275,13 +286,16 @@ protected:
 class cDynamicTrack {
 public:
     cDynamicTrack(const char *aPort, unsigned aBaudRate)
-        : ArchiveOutput(0), DataLogInEn(false), DataLogOutEn(false), LastInputCaptureValid (false) {
+        : ArchiveInput(0), ArchiveOutput(0), DataLogInEn(false),
+          DataLogOutEn(false), LastInputCaptureValid (false) {
         ValidConnection = VNERR_NO_ERROR == vn200_connect(&VectorNav200, aPort, aBaudRate);
     }
 
     ~cDynamicTrack() {
         ParameterList.clear();
         vn200_disconnect(&VectorNav200);
+        DisableInputLogging();
+        DisableOutputLogging();
     }
 
     nDTStatus::eDTStatus AddParameter(std::string &aParameterName, cDTParameter *aParameter) {
@@ -337,7 +351,7 @@ public:
         return nDTStatus::eSuccess;
     }
 
-    void DisbleInputLogging() {
+    void DisableInputLogging() {
         if (ArchiveInput) {
             delete ArchiveInput;
             ArchiveInput = 0;
@@ -359,8 +373,10 @@ public:
         }
     }
 
-    void DisbleOutputLogging() {
+    void DisableOutputLogging() {
         if (ArchiveOutput) {
+            const cINSLoggedData endSentinel(CurrentData, ElapsedTimer.elapsed(), true);
+            *ArchiveOutput << endSentinel;
             delete ArchiveOutput;
             ArchiveOutput = 0;
             OutputStream.close();
@@ -387,22 +403,7 @@ public:
     }
 
     bool CaptureDeviceParameters() {
-        if (ValidConnection) {
-            // New data is retrieved from the INS device.
-            Vn200CompositeData currentData;
-            vn200_getCurrentAsyncData(&VectorNav200, &currentData);
-
-            std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
-            for (; ParameterList.end() != parameter; parameter++) {
-                (*parameter)->LoadData((void *)&currentData);
-            }
-
-            if (DataLogOutEn) {
-                const cINSLoggedData loggedData(currentData, ElapsedTimer.elapsed());
-                *ArchiveOutput << loggedData;
-            }
-        }
-        else if (DataLogInEn) {
+        if (DataLogInEn) {
             // New data is input via a log file;
             const double elapsedTime = ElapsedTimer.elapsed();
 
@@ -411,47 +412,47 @@ public:
             if (!LastInputCaptureValid) {
                 *ArchiveInput >> stashedCapture;
 
-                if (LastInputCapture.GetElapsedTime() > elapsedTime) {
+                if (stashedCapture.GetElapsedTime() > elapsedTime ||
+                        stashedCapture.IsLastDatapoint()) {
                     // The current elapsed time is before the first data
                     //  capture occurred, thus return the first capture.
-                    Vn200CompositeData currentData;
-                    LastInputCapture.GetINSData(currentData);
+                    stashedCapture.GetINSData(CurrentData);
                     std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
                     for (; ParameterList.end() != parameter; parameter++) {
-                        (*parameter)->LoadData((void *)&currentData);
+                        (*parameter)->LoadData((void *)&CurrentData);
                     }
+
+                    LastInputCapture = stashedCapture;
+                    LastInputCaptureValid = true;
                     return false;
                 }
                 *ArchiveInput >> LastInputCapture;
                 LastInputCaptureValid = true;
             }
-            else if (LastInputCapture.GetElapsedTime() < elapsedTime) {
+            else if (LastInputCapture.GetElapsedTime() < elapsedTime &&
+                     !LastInputCapture.IsLastDatapoint()) {
                 stashedCapture = LastInputCapture;
                 *ArchiveInput >> LastInputCapture;
             }
             else {
                 // The current elapsed time is before the first data
-                //  capture occurred, thus return the first capture.
-                *ArchiveInput >> LastInputCapture;
-                LastInputCaptureValid = true;
-
-                Vn200CompositeData currentData;
-                LastInputCapture.GetINSData(currentData);
+                //  capture occurred, or the end of the log has been
+				//	reached. Use the last known good data.
+                LastInputCapture.GetINSData(CurrentData);
                 std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
                 for (; ParameterList.end() != parameter; parameter++) {
-                    (*parameter)->LoadData((void *)&currentData);
+                    (*parameter)->LoadData((void *)&CurrentData);
                 }
                 return false;
             }
 
             while (LastInputCapture.GetElapsedTime() < elapsedTime) {
-                if (InputStream.eof()) {
+                if (LastInputCapture.IsLastDatapoint()) {
                     // The end of the stream was reached, return the last data captured
-                    Vn200CompositeData currentData;
-                    LastInputCapture.GetINSData(currentData);
+                    LastInputCapture.GetINSData(CurrentData);
                     std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
                     for (; ParameterList.end() != parameter; parameter++) {
-                        (*parameter)->LoadData((void *)&currentData);
+                        (*parameter)->LoadData((void *)&CurrentData);
                     }
                     return false;
                 }
@@ -463,12 +464,26 @@ public:
             //  and LastInputCapture should point to after. Allowing the
             //  actual to be interpolated, assuming an adequate sample rate.
             stashedCapture.Interpolate(LastInputCapture, elapsedTime);
-            Vn200CompositeData currentData;
 
-            stashedCapture.GetINSData(currentData);
+            stashedCapture.GetINSData(CurrentData);
             std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
             for (; ParameterList.end() != parameter; parameter++) {
-                (*parameter)->LoadData((void *)&currentData);
+                (*parameter)->LoadData((void *)&CurrentData);
+            }
+        }
+
+        else if (ValidConnection) {
+            // New data is retrieved from the INS device.
+            vn200_getCurrentAsyncData(&VectorNav200, &CurrentData);
+
+            std::list<cDTParameter *>::iterator parameter = ParameterList.begin();
+            for (; ParameterList.end() != parameter; parameter++) {
+                (*parameter)->LoadData((void *)&CurrentData);
+            }
+
+            if (DataLogOutEn) {
+                const cINSLoggedData loggedData(CurrentData, ElapsedTimer.elapsed());
+                *ArchiveOutput << loggedData;
             }
         }
         return true;
@@ -486,6 +501,7 @@ protected:
 
     boost::archive::text_iarchive *ArchiveInput;
     boost::archive::text_oarchive *ArchiveOutput;
+    Vn200CompositeData CurrentData;
     boost::timer ElapsedTimer;
     std::ifstream InputStream;
     cINSLoggedData LastInputCapture;
