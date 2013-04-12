@@ -367,6 +367,7 @@ public:
         InputStream.open(aFilePath);
         if (InputStream.is_open()) {
             ArchiveInput = new boost::archive::text_iarchive(InputStream);
+            ValidConnection = true;
             DataLogInEn = true;
             ElapsedTimer.restart();
             LastInputCaptureValid = false;
