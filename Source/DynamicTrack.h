@@ -371,9 +371,9 @@ public:
             DataLogInEn = true;
             ElapsedTimer.restart();
             LastInputCaptureValid = false;
-			return(true);
+            return true;
         }
-		return(false);
+        return false;
     }
 
     void DisableOutputLogging() {
