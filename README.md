@@ -8,12 +8,7 @@ Currently device support is built in for the <a href="http://www.vectornav.com/p
 DynamicTrack exposes a very simple, extensible string-based interface for connecting to available devices and available data channels provided by those devices:
 
 <code>
-    cDynamicTrack dynamicTrack("COM9", 230400);
-    cDTPODParameter<double> latitudeParam("Pos.Latitude", dynamicTrack);
-    cDTPODParameter<double> yawParam("Orient.Yaw", dynamicTrack);
-    cDTPODParameter<double> pitchParam("Orient.Pitch", dynamicTrack);
-    cDTPODParameter<double> rollParam("Orient.Roll", dynamicTrack);
-    cDTPODParameter<unsigned> gpsFixParam("Orient.GPS.Fix", dynamicTrack);
+cDynamicTrack dynamicTrack("COM9", 230400);<br>cDTPODParameter<double> latitudeParam("Pos.Latitude", dynamicTrack);<br>cDTPODParameter<double> yawParam("Orient.Yaw", dynamicTrack);<br>cDTPODParameter<double> pitchParam("Orient.Pitch", dynamicTrack);<br>cDTPODParameter<double> rollParam("Orient.Roll", dynamicTrack);<br>cDTPODParameter<unsigned> gpsFixParam("Orient.GPS.Fix", dynamicTrack);<br>
 </code>
 
 DynamicTrack was commissioned by a confidential aircraft navigation startup and is provided under the MIT License ( http://opensource.org/licenses/MIT ).
