@@ -364,7 +364,7 @@ public:
             return false;
         }
 
-        InputStream.open(aFilePath);
+        InputStream.open(aFilePath.c_str());
         if (InputStream.is_open()) {
             ArchiveInput = new boost::archive::text_iarchive(InputStream);
             ValidConnection = true;
@@ -391,7 +391,7 @@ public:
             return false;
         }
 
-        OutputStream.open(aFilePath);
+        OutputStream.open(aFilePath.c_str());
         if (OutputStream.is_open()) {
             ArchiveOutput = new boost::archive::text_oarchive(OutputStream);
             DataLogOutEn = true;
