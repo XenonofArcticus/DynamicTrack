@@ -1,7 +1,12 @@
 project(VNavLib)
 cmake_minimum_required(VERSION 2.8)
 
-aux_source_directory(arch/linux/ SRC_LIST)
+if(WIN32 AND MSVC)
+    aux_source_directory(arch/win32/ SRC_LIST)
+ELSEIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    aux_source_directory(arch/linux/ SRC_LIST)
+endif()
+
 aux_source_directory(. SRC_LIST)
 
 add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
