@@ -170,67 +170,6 @@ protected:
     std::string DeviceString;
 };
 
-template <typename tType> class cDTPODParameter : public cDTParameter {
-public:
-    cDTPODParameter(std::string aParameterName, cDynamicTrack &aDynamicTrack)
-        : cDTParameter(&aDynamicTrack) {
-        DynamicTrack->AddParameter(aParameterName, this);
-    }
-
-    virtual ~cDTPODParameter() {
-        DynamicTrack->RemoveParameter(this);
-    }
-
-    nDTStatus::eDTStatus GetValue(std::string &aValue) {
-        aValue = boost::lexical_cast<std::string>(DeviceValue);
-        return Status;
-    }
-
-    // MKM March 2012: TODO - add bounds checking
-    nDTStatus::eDTStatus GetValue(char &aValue) {
-        aValue = (char)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(unsigned char &aValue) {
-        aValue = (unsigned char)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(short &aValue) {
-        aValue = (short)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(unsigned short &aValue) {
-        aValue = (unsigned short)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(double &aValue) {
-        aValue = (double)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(float &aValue) {
-        aValue = (float)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(int &aValue) {
-        aValue = (int)DeviceValue;
-        return Status;
-    }
-    nDTStatus::eDTStatus GetValue(unsigned &aValue) {
-        aValue = (unsigned)DeviceValue;
-        return Status;
-    }
-
-    void LoadData(void *aProprietaryDataStructure) {
-        if (DataFieldInterface) {
-            double dataValue;
-            DataFieldInterface->RetrieveData(aProprietaryDataStructure, DataFieldOffset,
-                                             dataValue, Status);
-            DeviceValue = (tType)dataValue;
-        }
-    }
-protected:
-    tType DeviceValue;
-};
 
 class cINSLoggedData {
 public:
@@ -545,6 +484,68 @@ protected:
     cRetrieveDeviceType<float> RetrieveFloatField;
     cRetrieveDeviceType<int> RetrieveIntField;
     cRetrieveDeviceType<unsigned> RetrieveUnsignedField;
+};
+
+template <typename tType> class cDTPODParameter : public cDTParameter {
+public:
+	cDTPODParameter(std::string aParameterName, cDynamicTrack &aDynamicTrack)
+		: cDTParameter(&aDynamicTrack) {
+			DynamicTrack->AddParameter(aParameterName, this);
+	}
+
+	virtual ~cDTPODParameter() {
+		DynamicTrack->RemoveParameter(this);
+	}
+
+	nDTStatus::eDTStatus GetValue(std::string &aValue) {
+		aValue = boost::lexical_cast<std::string>(DeviceValue);
+		return Status;
+	}
+
+	// MKM March 2012: TODO - add bounds checking
+	nDTStatus::eDTStatus GetValue(char &aValue) {
+		aValue = (char)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(unsigned char &aValue) {
+		aValue = (unsigned char)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(short &aValue) {
+		aValue = (short)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(unsigned short &aValue) {
+		aValue = (unsigned short)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(double &aValue) {
+		aValue = (double)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(float &aValue) {
+		aValue = (float)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(int &aValue) {
+		aValue = (int)DeviceValue;
+		return Status;
+	}
+	nDTStatus::eDTStatus GetValue(unsigned &aValue) {
+		aValue = (unsigned)DeviceValue;
+		return Status;
+	}
+
+	void LoadData(void *aProprietaryDataStructure) {
+		if (DataFieldInterface) {
+			double dataValue;
+			DataFieldInterface->RetrieveData(aProprietaryDataStructure, DataFieldOffset,
+				dataValue, Status);
+			DeviceValue = (tType)dataValue;
+		}
+	}
+protected:
+	tType DeviceValue;
 };
 
 
