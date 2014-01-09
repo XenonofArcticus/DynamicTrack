@@ -395,6 +395,8 @@ void* vn200_communicationHandler(void* vn200Obj)
 
 	vncp_event_signal(vn200Int->waitForThreadToStartServicingComPortEvent);
 
+	printf("%i\n", vn200Int->continueServicingComPort);
+
 	while (vn200Int->continueServicingComPort) {
 
 		unsigned int curResponsePos = 0;

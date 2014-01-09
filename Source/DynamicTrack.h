@@ -244,6 +244,11 @@ protected:
     VnYpr YawPitchRoll;
     VnVector3 LatitudeLongitudeAltitude;
     VnVector3 NEDVelocity;
+    float AttitudeUncertainty;
+    float PositionUncertainty;
+    float VelocityUncertainty;
+    double GPSTime;
+    unsigned short GPSWeek;
     double ElapsedTime;
 };
 
@@ -304,6 +309,27 @@ public:
                 aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, velocity.c2));
                 break;
             }
+            if ("Uncertainty.Attitude" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveFloatField, offsetof(Vn200CompositeData, attitudeUncertainty));
+                break;
+            }
+            if ("Uncertainty.Position" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveFloatField, offsetof(Vn200CompositeData, positionUncertainty));
+                break;
+            }
+            if ("Uncertainty.Velocity" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveFloatField, offsetof(Vn200CompositeData, velocityUncertainty));
+                break;
+            }
+            if ("GPS.Time" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveDoubleField, offsetof(Vn200CompositeData, gpsTimeOfWeek));
+                break;
+            }
+            if ("GPS.Week" == aParameterName) {
+                aParameter->AlignParameter(&RetrieveUShortField, offsetof(Vn200CompositeData, gpsWeek));
+                break;
+            }
+
             return nDTStatus::eUnknownParameter;
         };
 
@@ -480,6 +506,7 @@ protected:
     // Templates to support each field type in the devices proprietarty data structure.
     cRetrieveDeviceType<char> RetrieveCharField;
     cRetrieveDeviceType<unsigned char> RetrieveUCharField;
+    cRetrieveDeviceType<unsigned short> RetrieveUShortField;
     cRetrieveDeviceType<double> RetrieveDoubleField;
     cRetrieveDeviceType<float> RetrieveFloatField;
     cRetrieveDeviceType<int> RetrieveIntField;
