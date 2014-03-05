@@ -258,6 +258,7 @@ public:
         : ArchiveInput(0), ArchiveOutput(0), DataLogInEn(false),
           DataLogOutEn(false), LastInputCaptureValid (false) {
         ValidConnection = VNERR_NO_ERROR == vn200_connect(&VectorNav200, aPort, aBaudRate);
+		memset((void *)&CurrentData, 0, sizeof(CurrentData)); // it has no constructor and can show stale uninitialized data
     }
 
     ~cDynamicTrack() {
