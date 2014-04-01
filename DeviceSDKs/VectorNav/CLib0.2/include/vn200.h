@@ -35,6 +35,12 @@
 #include "vn_kinematics.h"
 #include "vn_linearAlgebra.h"
 
+#if EXPORT_TO_DLL
+	#define DLL_EXPORT __declspec(dllexport)
+#else
+	#define DLL_EXPORT
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -106,7 +112,7 @@ typedef void (*Vn200NewAsyncDataReceivedListener)(Vn200* sender, Vn200CompositeD
  * \param[in]	baudrate	The baudrate to connect at.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_connect(Vn200* newVn200, const char* portName, int baudrate);
+DLL_EXPORT VN_ERROR_CODE vn200_connect(Vn200* newVn200, const char* portName, int baudrate);
 
 /**
  * \brief Disconnects from the VN-200 device and disposes of any internal resources.
@@ -114,7 +120,7 @@ VN_ERROR_CODE vn200_connect(Vn200* newVn200, const char* portName, int baudrate)
  * \param vn200 Pointer to the Vn200 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_disconnect(Vn200* vn200);
+DLL_EXPORT VN_ERROR_CODE vn200_disconnect(Vn200* vn200);
 
 /**
  * \brief Computes the checksum for the provided command.
@@ -124,7 +130,7 @@ VN_ERROR_CODE vn200_disconnect(Vn200* vn200);
  *
  * \return The computed checksum number.
  */
-unsigned char vn200_checksum_compute(const char* cmdToCheck);
+DLL_EXPORT unsigned char vn200_checksum_compute(const char* cmdToCheck);
 
 /**
  * \brief Computes the checksum for the provided command and returns it as a
@@ -136,7 +142,7 @@ unsigned char vn200_checksum_compute(const char* cmdToCheck);
  * \param[out]	checksum
  * A character array of length 2 which the computed checksum will be placed.
  */
-void vn200_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum);
+DLL_EXPORT void vn200_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum);
 
 /**
  * \brief Sets the timeout value for the reading values from the VN-200 sensor.
@@ -147,7 +153,7 @@ void vn200_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum
  *
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_set_timeout(Vn200* vn200, int timeout);
+DLL_EXPORT VN_ERROR_CODE vn200_set_timeout(Vn200* vn200, int timeout);
 
 /**
  * \brief Retrieves the associated timeout value for the Vn200 object.
@@ -157,7 +163,7 @@ VN_ERROR_CODE vn200_set_timeout(Vn200* vn200, int timeout);
  * \return The timeout value in milliseconds. -1 indicates that timeouts are
  * not used.
  */
-int vn200_get_timeout(Vn200* vn200);
+DLL_EXPORT int vn200_get_timeout(Vn200* vn200);
 
 /**
  * \brief Retreives the most recently received asynchronous measurements
@@ -169,7 +175,7 @@ int vn200_get_timeout(Vn200* vn200);
  * no data received for certain fields, they will be zeroed out.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getCurrentAsyncData(Vn200* vn200, Vn200CompositeData* curData);
+DLL_EXPORT VN_ERROR_CODE vn200_getCurrentAsyncData(Vn200* vn200, Vn200CompositeData* curData);
 
 /**
  * \brief Commands the VN-200 unit to write its current register setting to
@@ -178,7 +184,7 @@ VN_ERROR_CODE vn200_getCurrentAsyncData(Vn200* vn200, Vn200CompositeData* curDat
  * \param[in] vn200 Pointer to the Vn200 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_writeSettings(Vn200* vn200, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_writeSettings(Vn200* vn200, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-200 unit to revert its settings to factory defaults.
@@ -186,7 +192,7 @@ VN_ERROR_CODE vn200_writeSettings(Vn200* vn200, VN_BOOL waitForResponse);
  * \param[in] vn200 Pointer to the Vn200 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_restoreFactorySettings(Vn200* vn200, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_restoreFactorySettings(Vn200* vn200, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-200 module to reset itself.
@@ -194,7 +200,7 @@ VN_ERROR_CODE vn200_restoreFactorySettings(Vn200* vn200, VN_BOOL waitForResponse
  * \param[in] vn200 Pointer to the Vn200 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_reset(Vn200* vn200);
+DLL_EXPORT VN_ERROR_CODE vn200_reset(Vn200* vn200);
 
 /**
  * \brief Allows registering a function which will be called whenever a new
@@ -204,7 +210,7 @@ VN_ERROR_CODE vn200_reset(Vn200* vn200);
  * 
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_registerAsyncDataReceivedListener(Vn200* vn200, Vn200NewAsyncDataReceivedListener listener);
+DLL_EXPORT VN_ERROR_CODE vn200_registerAsyncDataReceivedListener(Vn200* vn200, Vn200NewAsyncDataReceivedListener listener);
 
 /**
  * \brief Unregisters an already registered function for recieving notifications
@@ -214,7 +220,7 @@ VN_ERROR_CODE vn200_registerAsyncDataReceivedListener(Vn200* vn200, Vn200NewAsyn
  * 
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_unregisterAsyncDataReceivedListener(Vn200* vn200, Vn200NewAsyncDataReceivedListener listener);
+DLL_EXPORT VN_ERROR_CODE vn200_unregisterAsyncDataReceivedListener(Vn200* vn200, Vn200NewAsyncDataReceivedListener listener);
 
 /**
  * \brief Checks if we are able to send and receive communication with the VN-200 sensor.
@@ -223,7 +229,7 @@ VN_ERROR_CODE vn200_unregisterAsyncDataReceivedListener(Vn200* vn200, Vn200NewAs
  *
  * \return VN_TRUE if the library was able to send and receive a valid response from the VN-200 sensor; otherwise VN_FALSE.
  */
-VN_BOOL vn200_verifyConnectivity(Vn200* vn200);
+DLL_EXPORT VN_BOOL vn200_verifyConnectivity(Vn200* vn200);
 
 
 /**
@@ -234,7 +240,7 @@ VN_BOOL vn200_verifyConnectivity(Vn200* vn200);
  * \param[in] userTagBufferLength Length of the provided userTagBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getUserTag(Vn200* vn200, char* userTagBuffer, unsigned int userTagBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn200_getUserTag(Vn200* vn200, char* userTagBuffer, unsigned int userTagBufferLength);
 
 /**
  * \brief Sets the values of the User Tag register.
@@ -247,7 +253,7 @@ VN_ERROR_CODE vn200_getUserTag(Vn200* vn200, char* userTagBuffer, unsigned int u
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setUserTag(Vn200* vn200, char* userTagData, unsigned int userTagDataLength, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setUserTag(Vn200* vn200, char* userTagData, unsigned int userTagDataLength, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Model Number register.
@@ -257,7 +263,7 @@ VN_ERROR_CODE vn200_setUserTag(Vn200* vn200, char* userTagData, unsigned int use
  * \param[in] modelBufferLength Length of the provided modelBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getModelNumber(Vn200* vn200, char* modelBuffer, unsigned int modelBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn200_getModelNumber(Vn200* vn200, char* modelBuffer, unsigned int modelBufferLength);
 
 /**
  * \brief Gets the values in the Hardware Revision register.
@@ -266,7 +272,7 @@ VN_ERROR_CODE vn200_getModelNumber(Vn200* vn200, char* modelBuffer, unsigned int
  * \param[out] hardwareRevision The hardware revision value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getHardwareRevision(Vn200* vn200, int* hardwareRevision);
+DLL_EXPORT VN_ERROR_CODE vn200_getHardwareRevision(Vn200* vn200, int* hardwareRevision);
 
 /**
  * \brief Gets the values in the Serial Number register.
@@ -276,7 +282,7 @@ VN_ERROR_CODE vn200_getHardwareRevision(Vn200* vn200, int* hardwareRevision);
  * \param[in] serialNumberBufferLength Length of the provided serialNumberBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getSerialNumber(Vn200* vn200, char* serialNumberBuffer, unsigned int serialNumberBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn200_getSerialNumber(Vn200* vn200, char* serialNumberBuffer, unsigned int serialNumberBufferLength);
 
 /**
  * \brief Gets the values in the Firmware Version register.
@@ -286,7 +292,7 @@ VN_ERROR_CODE vn200_getSerialNumber(Vn200* vn200, char* serialNumberBuffer, unsi
  * \param[in] firmwareVersionBufferLength Length of the provided firmwareVersionBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getFirmwareVersion(Vn200* vn200, char* firmwareVersionBuffer, unsigned int firmwareVersionBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn200_getFirmwareVersion(Vn200* vn200, char* firmwareVersionBuffer, unsigned int firmwareVersionBufferLength);
 
 /**
  * \brief Gets the values in the Serial Baud Rate register.
@@ -295,7 +301,7 @@ VN_ERROR_CODE vn200_getFirmwareVersion(Vn200* vn200, char* firmwareVersionBuffer
  * \param[out] serialBaudrate The serial baudrate value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getSerialBaudRate(Vn200* vn200, unsigned int* serialBaudrate);
+DLL_EXPORT VN_ERROR_CODE vn200_getSerialBaudRate(Vn200* vn200, unsigned int* serialBaudrate);
 
 /**
  * \brief Sets the values of the Serial Baud Rate register.
@@ -307,7 +313,7 @@ VN_ERROR_CODE vn200_getSerialBaudRate(Vn200* vn200, unsigned int* serialBaudrate
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setSerialBaudRate(Vn200* vn200, unsigned int serialBaudrate, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setSerialBaudRate(Vn200* vn200, unsigned int serialBaudrate, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Asynchronous Data Output Type register.
@@ -316,7 +322,7 @@ VN_ERROR_CODE vn200_setSerialBaudRate(Vn200* vn200, unsigned int serialBaudrate,
  * \param[out] asyncDataOutputType The asynchronous data output type value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getAsynchronousDataOutputType(Vn200* vn200, unsigned int* asyncDataOutputType);
+DLL_EXPORT VN_ERROR_CODE vn200_getAsynchronousDataOutputType(Vn200* vn200, unsigned int* asyncDataOutputType);
 
 /**
  * \brief Sets the values of the Asynchronous Data Output Type register.
@@ -328,7 +334,7 @@ VN_ERROR_CODE vn200_getAsynchronousDataOutputType(Vn200* vn200, unsigned int* as
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setAsynchronousDataOutputType(Vn200* vn200, unsigned int asyncDataOutputType, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setAsynchronousDataOutputType(Vn200* vn200, unsigned int asyncDataOutputType, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Asynchronous Data Output Frequency register.
@@ -337,7 +343,7 @@ VN_ERROR_CODE vn200_setAsynchronousDataOutputType(Vn200* vn200, unsigned int asy
  * \param[out] asyncDataOutputFrequency The asynchronous data output frequency value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getAsynchronousDataOutputFrequency(Vn200* vn200, unsigned int* asyncDataOutputFrequency);
+DLL_EXPORT VN_ERROR_CODE vn200_getAsynchronousDataOutputFrequency(Vn200* vn200, unsigned int* asyncDataOutputFrequency);
 
 /**
  * \brief Sets the values of the Asynchronous Data Output Frequency register.
@@ -349,7 +355,7 @@ VN_ERROR_CODE vn200_getAsynchronousDataOutputFrequency(Vn200* vn200, unsigned in
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setAsynchronousDataOutputFrequency(Vn200* vn200, unsigned int asyncDataOutputFrequency, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setAsynchronousDataOutputFrequency(Vn200* vn200, unsigned int asyncDataOutputFrequency, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Magnetic and Gravity Reference Vectors register.
@@ -359,7 +365,7 @@ VN_ERROR_CODE vn200_setAsynchronousDataOutputFrequency(Vn200* vn200, unsigned in
  * \param[out] gravityReference The current sensor gravity reference vector (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getMagneticGravityReferenceVectors(Vn200* vn200, VnVector3* magneticReference, VnVector3* gravityReference);
+DLL_EXPORT VN_ERROR_CODE vn200_getMagneticGravityReferenceVectors(Vn200* vn200, VnVector3* magneticReference, VnVector3* gravityReference);
 
 /**
  * \brief Sets the values of the Magnetic and Gravity Reference Vectors register.
@@ -372,7 +378,7 @@ VN_ERROR_CODE vn200_getMagneticGravityReferenceVectors(Vn200* vn200, VnVector3* 
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setMagneticGravityReferenceVectors(Vn200* vn200, VnVector3 magneticReference, VnVector3 gravityReference, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setMagneticGravityReferenceVectors(Vn200* vn200, VnVector3 magneticReference, VnVector3 gravityReference, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Reference Frame Rotation register.
@@ -381,7 +387,7 @@ VN_ERROR_CODE vn200_setMagneticGravityReferenceVectors(Vn200* vn200, VnVector3 m
  * \param[out] c The current sensor C matrix values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getReferenceFrameRotation(Vn200* vn200, VnMatrix3x3* c);
+DLL_EXPORT VN_ERROR_CODE vn200_getReferenceFrameRotation(Vn200* vn200, VnMatrix3x3* c);
 
 /**
  * \brief Sets the values of the Reference Frame Rotation register.
@@ -393,7 +399,7 @@ VN_ERROR_CODE vn200_getReferenceFrameRotation(Vn200* vn200, VnMatrix3x3* c);
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setReferenceFrameRotation(Vn200* vn200, VnMatrix3x3 c, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setReferenceFrameRotation(Vn200* vn200, VnMatrix3x3 c, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Communication Protocol Control register.
@@ -408,7 +414,7 @@ VN_ERROR_CODE vn200_setReferenceFrameRotation(Vn200* vn200, VnMatrix3x3 c, VN_BO
  * \param[out] errorMode The error mode value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getCommunicationProtocolControl(Vn200* vn200, unsigned char* serialCount, unsigned char* serialStatus, unsigned char* spiCount, unsigned char* spiStatus, unsigned char* serialChecksum, unsigned char* spiChecksum, unsigned char* errorMode);
+DLL_EXPORT VN_ERROR_CODE vn200_getCommunicationProtocolControl(Vn200* vn200, unsigned char* serialCount, unsigned char* serialStatus, unsigned char* spiCount, unsigned char* spiStatus, unsigned char* serialChecksum, unsigned char* spiChecksum, unsigned char* errorMode);
 
 /**
  * \brief Sets the values of the Communication Protocol Control register.
@@ -426,7 +432,7 @@ VN_ERROR_CODE vn200_getCommunicationProtocolControl(Vn200* vn200, unsigned char*
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setCommunicationProtocolControl(Vn200* vn200, unsigned char serialCount, unsigned char serialStatus, unsigned char spiCount, unsigned char spiStatus, unsigned char serialChecksum, unsigned char spiChecksum, unsigned char errorMode, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setCommunicationProtocolControl(Vn200* vn200, unsigned char serialCount, unsigned char serialStatus, unsigned char spiCount, unsigned char spiStatus, unsigned char serialChecksum, unsigned char spiChecksum, unsigned char errorMode, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Synchronization Control register.
@@ -443,7 +449,7 @@ VN_ERROR_CODE vn200_setCommunicationProtocolControl(Vn200* vn200, unsigned char 
  * \param[out] reserved1 The reserved value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getSynchronizationControl(Vn200* vn200, unsigned char* syncInMode, unsigned char* syncInEdge, unsigned short* syncInSkipFactor, unsigned int* reserved0, unsigned char* syncOutMode, unsigned char* syncOutPolarity, unsigned short* syncOutSkipFactor, unsigned int* syncOutPulseWidth, unsigned int* reserved1);
+DLL_EXPORT VN_ERROR_CODE vn200_getSynchronizationControl(Vn200* vn200, unsigned char* syncInMode, unsigned char* syncInEdge, unsigned short* syncInSkipFactor, unsigned int* reserved0, unsigned char* syncOutMode, unsigned char* syncOutPolarity, unsigned short* syncOutSkipFactor, unsigned int* syncOutPulseWidth, unsigned int* reserved1);
 
 /**
  * \brief Sets the values of the Synchronization Control register.
@@ -463,7 +469,7 @@ VN_ERROR_CODE vn200_getSynchronizationControl(Vn200* vn200, unsigned char* syncI
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setSynchronizationControl(Vn200* vn200, unsigned char syncInMode, unsigned char syncInEdge, unsigned short syncInSkipFactor, unsigned int reserved0, unsigned char syncOutMode, unsigned char syncOutPolarity, unsigned short syncOutSkipFactor, unsigned int syncOutPulseWidth, unsigned int reserved1, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setSynchronizationControl(Vn200* vn200, unsigned char syncInMode, unsigned char syncInEdge, unsigned short syncInSkipFactor, unsigned int reserved0, unsigned char syncOutMode, unsigned char syncOutPolarity, unsigned short syncOutSkipFactor, unsigned int syncOutPulseWidth, unsigned int reserved1, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Calibrated Sensor Measurements register.
@@ -476,7 +482,7 @@ VN_ERROR_CODE vn200_setSynchronizationControl(Vn200* vn200, unsigned char syncIn
  * \param[out] pressure The pressure value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getCalibratedSensorMeasurements(Vn200* vn200, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, float* temperature, float* pressure);
+DLL_EXPORT VN_ERROR_CODE vn200_getCalibratedSensorMeasurements(Vn200* vn200, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, float* temperature, float* pressure);
 
 /**
  * \brief Gets the values in the GPS Configuration register.
@@ -488,7 +494,7 @@ VN_ERROR_CODE vn200_getCalibratedSensorMeasurements(Vn200* vn200, VnVector3* mag
  * \param[out] nmeaRate The NMEA_Rate value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getGpsConfiguration(Vn200* vn200, unsigned char* mode, unsigned char* nmeaSerial1, unsigned char* nmeaSerial2, unsigned char* nmeaRate);
+DLL_EXPORT VN_ERROR_CODE vn200_getGpsConfiguration(Vn200* vn200, unsigned char* mode, unsigned char* nmeaSerial1, unsigned char* nmeaSerial2, unsigned char* nmeaRate);
 
 /**
  * \brief Sets the values of the GPS Configuration register.
@@ -503,7 +509,7 @@ VN_ERROR_CODE vn200_getGpsConfiguration(Vn200* vn200, unsigned char* mode, unsig
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setGpsConfiguration(Vn200* vn200, unsigned char mode, unsigned char nmeaSerial1, unsigned char nmeaSerial2, unsigned char nmeaRate, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setGpsConfiguration(Vn200* vn200, unsigned char mode, unsigned char nmeaSerial1, unsigned char nmeaSerial2, unsigned char nmeaRate, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the GPS Antenna Offset register.
@@ -512,7 +518,7 @@ VN_ERROR_CODE vn200_setGpsConfiguration(Vn200* vn200, unsigned char mode, unsign
  * \param[out] position The current sensor relative postion of GPS antenna (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getGpsAntennaOffset(Vn200* vn200, VnVector3* position);
+DLL_EXPORT VN_ERROR_CODE vn200_getGpsAntennaOffset(Vn200* vn200, VnVector3* position);
 
 /**
  * \brief Sets the values of the GPS Antenna Offset register.
@@ -524,7 +530,7 @@ VN_ERROR_CODE vn200_getGpsAntennaOffset(Vn200* vn200, VnVector3* position);
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_setGpsAntennaOffset(Vn200* vn200, VnVector3 position, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn200_setGpsAntennaOffset(Vn200* vn200, VnVector3 position, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the GPS Solution register.
@@ -541,7 +547,7 @@ VN_ERROR_CODE vn200_setGpsAntennaOffset(Vn200* vn200, VnVector3 position, VN_BOO
  * \param[out] timeAccuracy The time accuracy estimate value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getGpsSolution(Vn200* vn200, double* gpsTime, unsigned short* gpsWeek, unsigned char* gpsFix, unsigned char* numberOfSatellites, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, VnVector3* positionAccuracy, float* speedAccuracy, float* timeAccuracy);
+DLL_EXPORT VN_ERROR_CODE vn200_getGpsSolution(Vn200* vn200, double* gpsTime, unsigned short* gpsWeek, unsigned char* gpsFix, unsigned char* numberOfSatellites, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, VnVector3* positionAccuracy, float* speedAccuracy, float* timeAccuracy);
 
 /**
  * \brief Gets the values in the INS Solution register.
@@ -558,7 +564,7 @@ VN_ERROR_CODE vn200_getGpsSolution(Vn200* vn200, double* gpsTime, unsigned short
  * \param[out] velocityUncertainty The velocity uncertainty value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn200_getInsSolution(Vn200* vn200, double* gpsTime, unsigned short* gpsWeek, unsigned short* status, VnVector3* ypr, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, float* attitudeUncertainty, float* positionUncertainty, float* velocityUncertainty);
+DLL_EXPORT VN_ERROR_CODE vn200_getInsSolution(Vn200* vn200, double* gpsTime, unsigned short* gpsWeek, unsigned short* status, VnVector3* ypr, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, float* attitudeUncertainty, float* positionUncertainty, float* velocityUncertainty);
 
 
 #ifdef __cplusplus

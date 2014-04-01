@@ -35,6 +35,12 @@
 #include "vn_kinematics.h"
 #include "vn_linearAlgebra.h"
 
+#if EXPORT_TO_DLL
+	#define DLL_EXPORT __declspec(dllexport)
+#else
+	#define DLL_EXPORT
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -111,7 +117,7 @@ typedef void (*Vn100NewAsyncDataReceivedListener)(Vn100* sender, Vn100CompositeD
  * \param[in]	baudrate	The baudrate to connect at.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_connect(Vn100* newVn100, const char* portName, int baudrate);
+DLL_EXPORT VN_ERROR_CODE vn100_connect(Vn100* newVn100, const char* portName, int baudrate);
 
 /**
  * \brief Disconnects from the VN-100 device and disposes of any internal resources.
@@ -119,7 +125,7 @@ VN_ERROR_CODE vn100_connect(Vn100* newVn100, const char* portName, int baudrate)
  * \param vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_disconnect(Vn100* vn100);
+DLL_EXPORT VN_ERROR_CODE vn100_disconnect(Vn100* vn100);
 
 /**
  * \brief Computes the checksum for the provided command.
@@ -129,7 +135,7 @@ VN_ERROR_CODE vn100_disconnect(Vn100* vn100);
  *
  * \return The computed checksum number.
  */
-unsigned char vn100_checksum_compute(const char* cmdToCheck);
+DLL_EXPORT unsigned char vn100_checksum_compute(const char* cmdToCheck);
 
 /**
  * \brief Computes the checksum for the provided command and returns it as a
@@ -141,7 +147,7 @@ unsigned char vn100_checksum_compute(const char* cmdToCheck);
  * \param[out]	checksum
  * A character array of length 2 which the computed checksum will be placed.
  */
-void vn100_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum);
+DLL_EXPORT void vn100_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum);
 
 /**
  * \brief Sets the timeout value for the reading values from the VN-100 sensor.
@@ -152,7 +158,7 @@ void vn100_checksum_computeAndReturnAsHex(const char* cmdToCheck, char* checksum
  *
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_set_timeout(Vn100* vn100, int timeout);
+DLL_EXPORT VN_ERROR_CODE vn100_set_timeout(Vn100* vn100, int timeout);
 
 /**
  * \brief Retrieves the associated timeout value for the Vn100 object.
@@ -162,7 +168,7 @@ VN_ERROR_CODE vn100_set_timeout(Vn100* vn100, int timeout);
  * \return The timeout value in milliseconds. -1 indicates that timeouts are
  * not used.
  */
-int vn100_get_timeout(Vn100* vn100);
+DLL_EXPORT int vn100_get_timeout(Vn100* vn100);
 
 /**
  * \brief Retreives the most recently received asynchronous measurements
@@ -174,7 +180,7 @@ int vn100_get_timeout(Vn100* vn100);
  * no data received for certain fields, they will be zeroed out.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getCurrentAsyncData(Vn100* vn100, Vn100CompositeData* curData);
+DLL_EXPORT VN_ERROR_CODE vn100_getCurrentAsyncData(Vn100* vn100, Vn100CompositeData* curData);
 
 /**
  * \brief Commands the VN-100 unit to write its current register setting to
@@ -183,7 +189,7 @@ VN_ERROR_CODE vn100_getCurrentAsyncData(Vn100* vn100, Vn100CompositeData* curDat
  * \param[in] vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_writeSettings(Vn100* vn100, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_writeSettings(Vn100* vn100, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-100 unit to revert its settings to factory defaults.
@@ -191,7 +197,7 @@ VN_ERROR_CODE vn100_writeSettings(Vn100* vn100, VN_BOOL waitForResponse);
  * \param[in] vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_restoreFactorySettings(Vn100* vn100, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_restoreFactorySettings(Vn100* vn100, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-100 module to zero out its current orientation.
@@ -199,7 +205,7 @@ VN_ERROR_CODE vn100_restoreFactorySettings(Vn100* vn100, VN_BOOL waitForResponse
  * \param[in] vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_tare(Vn100* vn100, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_tare(Vn100* vn100, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-100 module to reset itself.
@@ -207,7 +213,7 @@ VN_ERROR_CODE vn100_tare(Vn100* vn100, VN_BOOL waitForResponse);
  * \param[in] vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_reset(Vn100* vn100);
+DLL_EXPORT VN_ERROR_CODE vn100_reset(Vn100* vn100);
 
 /**
  * \brief Notifies the VN-100 module if a known magnetic disturbance is present.
@@ -216,7 +222,7 @@ VN_ERROR_CODE vn100_reset(Vn100* vn100);
  * \param[in] isDisturbancePresent True if a known magnetic disturbance is present. False if not.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_knownMagneticDisturbance(Vn100* vn100, VN_BOOL isDisturbancePresent, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_knownMagneticDisturbance(Vn100* vn100, VN_BOOL isDisturbancePresent, VN_BOOL waitForResponse);
 
 /**
  * \brief Notifies the VN-100 module if a known acceleration disturbance is present.
@@ -225,7 +231,7 @@ VN_ERROR_CODE vn100_knownMagneticDisturbance(Vn100* vn100, VN_BOOL isDisturbance
  * \param[in] isDisturbancePresent True if a known acceleration disturbance is present. False if not.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_knownAccelerationDisturbance(Vn100* vn100, VN_BOOL isDisturbancePresent, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_knownAccelerationDisturbance(Vn100* vn100, VN_BOOL isDisturbancePresent, VN_BOOL waitForResponse);
 
 /**
  * \brief Commands the VN-100 module to save the current gyro bias estimate to
@@ -234,7 +240,7 @@ VN_ERROR_CODE vn100_knownAccelerationDisturbance(Vn100* vn100, VN_BOOL isDisturb
  * \param[in] vn100 Pointer to the Vn100 control object.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setGyroBias(Vn100* vn100, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setGyroBias(Vn100* vn100, VN_BOOL waitForResponse);
 
 /**
  * \brief Allows registering a function which will be called whenever a new
@@ -244,7 +250,7 @@ VN_ERROR_CODE vn100_setGyroBias(Vn100* vn100, VN_BOOL waitForResponse);
  * 
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_registerAsyncDataReceivedListener(Vn100* vn100, Vn100NewAsyncDataReceivedListener listener);
+DLL_EXPORT VN_ERROR_CODE vn100_registerAsyncDataReceivedListener(Vn100* vn100, Vn100NewAsyncDataReceivedListener listener);
 
 /**
  * \brief Unregisters an already registered function for recieving notifications
@@ -254,7 +260,7 @@ VN_ERROR_CODE vn100_registerAsyncDataReceivedListener(Vn100* vn100, Vn100NewAsyn
  * 
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_unregisterAsyncDataReceivedListener(Vn100* vn100, Vn100NewAsyncDataReceivedListener listener);
+DLL_EXPORT VN_ERROR_CODE vn100_unregisterAsyncDataReceivedListener(Vn100* vn100, Vn100NewAsyncDataReceivedListener listener);
 
 /**
  * \brief Checks if we are able to send and receive communication with the VN-100 sensor.
@@ -263,7 +269,7 @@ VN_ERROR_CODE vn100_unregisterAsyncDataReceivedListener(Vn100* vn100, Vn100NewAs
  *
  * \return VN_TRUE if the library was able to send and receive a valid response from the VN-100 sensor; otherwise VN_FALSE.
  */
-VN_BOOL vn100_verifyConnectivity(Vn100* vn100);
+DLL_EXPORT VN_BOOL vn100_verifyConnectivity(Vn100* vn100);
 
 
 /**
@@ -274,7 +280,7 @@ VN_BOOL vn100_verifyConnectivity(Vn100* vn100);
  * \param[in] userTagBufferLength Length of the provided userTagBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getUserTag(Vn100* vn100, char* userTagBuffer, unsigned int userTagBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn100_getUserTag(Vn100* vn100, char* userTagBuffer, unsigned int userTagBufferLength);
 
 /**
  * \brief Sets the values of the User Tag register.
@@ -287,7 +293,7 @@ VN_ERROR_CODE vn100_getUserTag(Vn100* vn100, char* userTagBuffer, unsigned int u
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setUserTag(Vn100* vn100, char* userTagData, unsigned int userTagDataLength, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setUserTag(Vn100* vn100, char* userTagData, unsigned int userTagDataLength, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Model Number register.
@@ -297,7 +303,7 @@ VN_ERROR_CODE vn100_setUserTag(Vn100* vn100, char* userTagData, unsigned int use
  * \param[in] modelBufferLength Length of the provided modelBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getModelNumber(Vn100* vn100, char* modelBuffer, unsigned int modelBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn100_getModelNumber(Vn100* vn100, char* modelBuffer, unsigned int modelBufferLength);
 
 /**
  * \brief Gets the values in the Hardware Revision register.
@@ -306,7 +312,7 @@ VN_ERROR_CODE vn100_getModelNumber(Vn100* vn100, char* modelBuffer, unsigned int
  * \param[out] hardwareRevision The hardware revision value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getHardwareRevision(Vn100* vn100, int* hardwareRevision);
+DLL_EXPORT VN_ERROR_CODE vn100_getHardwareRevision(Vn100* vn100, int* hardwareRevision);
 
 /**
  * \brief Gets the values in the Serial Number register.
@@ -316,7 +322,7 @@ VN_ERROR_CODE vn100_getHardwareRevision(Vn100* vn100, int* hardwareRevision);
  * \param[in] serialNumberBufferLength Length of the provided serialNumberBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getSerialNumber(Vn100* vn100, char* serialNumberBuffer, unsigned int serialNumberBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn100_getSerialNumber(Vn100* vn100, char* serialNumberBuffer, unsigned int serialNumberBufferLength);
 
 /**
  * \brief Gets the values in the Firmware Version register.
@@ -326,7 +332,7 @@ VN_ERROR_CODE vn100_getSerialNumber(Vn100* vn100, char* serialNumberBuffer, unsi
  * \param[in] firmwareVersionBufferLength Length of the provided firmwareVersionBuffer buffer.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFirmwareVersion(Vn100* vn100, char* firmwareVersionBuffer, unsigned int firmwareVersionBufferLength);
+DLL_EXPORT VN_ERROR_CODE vn100_getFirmwareVersion(Vn100* vn100, char* firmwareVersionBuffer, unsigned int firmwareVersionBufferLength);
 
 /**
  * \brief Gets the values in the Serial Baud Rate register.
@@ -335,7 +341,7 @@ VN_ERROR_CODE vn100_getFirmwareVersion(Vn100* vn100, char* firmwareVersionBuffer
  * \param[out] serialBaudrate The serial baudrate value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getSerialBaudRate(Vn100* vn100, unsigned int* serialBaudrate);
+DLL_EXPORT VN_ERROR_CODE vn100_getSerialBaudRate(Vn100* vn100, unsigned int* serialBaudrate);
 
 /**
  * \brief Sets the values of the Serial Baud Rate register.
@@ -347,7 +353,7 @@ VN_ERROR_CODE vn100_getSerialBaudRate(Vn100* vn100, unsigned int* serialBaudrate
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setSerialBaudRate(Vn100* vn100, unsigned int serialBaudrate, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setSerialBaudRate(Vn100* vn100, unsigned int serialBaudrate, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Asynchronous Data Output Type register.
@@ -356,7 +362,7 @@ VN_ERROR_CODE vn100_setSerialBaudRate(Vn100* vn100, unsigned int serialBaudrate,
  * \param[out] asyncDataOutputType The asynchronous data output type value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAsynchronousDataOutputType(Vn100* vn100, unsigned int* asyncDataOutputType);
+DLL_EXPORT VN_ERROR_CODE vn100_getAsynchronousDataOutputType(Vn100* vn100, unsigned int* asyncDataOutputType);
 
 /**
  * \brief Sets the values of the Asynchronous Data Output Type register.
@@ -368,7 +374,7 @@ VN_ERROR_CODE vn100_getAsynchronousDataOutputType(Vn100* vn100, unsigned int* as
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setAsynchronousDataOutputType(Vn100* vn100, unsigned int asyncDataOutputType, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setAsynchronousDataOutputType(Vn100* vn100, unsigned int asyncDataOutputType, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Asynchronous Data Output Frequency register.
@@ -377,7 +383,7 @@ VN_ERROR_CODE vn100_setAsynchronousDataOutputType(Vn100* vn100, unsigned int asy
  * \param[out] asyncDataOutputFrequency The asynchronous data output frequency value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAsynchronousDataOutputFrequency(Vn100* vn100, unsigned int* asyncDataOutputFrequency);
+DLL_EXPORT VN_ERROR_CODE vn100_getAsynchronousDataOutputFrequency(Vn100* vn100, unsigned int* asyncDataOutputFrequency);
 
 /**
  * \brief Sets the values of the Asynchronous Data Output Frequency register.
@@ -389,7 +395,7 @@ VN_ERROR_CODE vn100_getAsynchronousDataOutputFrequency(Vn100* vn100, unsigned in
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setAsynchronousDataOutputFrequency(Vn100* vn100, unsigned int asyncDataOutputFrequency, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setAsynchronousDataOutputFrequency(Vn100* vn100, unsigned int asyncDataOutputFrequency, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Attitude (Yaw, Pitch, Roll) register.
@@ -398,7 +404,7 @@ VN_ERROR_CODE vn100_setAsynchronousDataOutputFrequency(Vn100* vn100, unsigned in
  * \param[out] attitude The current sensor YawPitchRoll values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRoll(Vn100* vn100, VnYpr* attitude);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRoll(Vn100* vn100, VnYpr* attitude);
 
 /**
  * \brief Gets the values in the Attitude (Quaternion) register.
@@ -407,7 +413,7 @@ VN_ERROR_CODE vn100_getYawPitchRoll(Vn100* vn100, VnYpr* attitude);
  * \param[out] attitude The current sensor Quaterion values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternion(Vn100* vn100, VnQuaternion* attitude);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternion(Vn100* vn100, VnQuaternion* attitude);
 
 /**
  * \brief Gets the values in the Quaternion and Magnetic register.
@@ -417,7 +423,7 @@ VN_ERROR_CODE vn100_getQuaternion(Vn100* vn100, VnQuaternion* attitude);
  * \param[out] magnetic The current sensor magnetic (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionMagnetic(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionMagnetic(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic);
 
 /**
  * \brief Gets the values in the Quaternion and Acceleration register.
@@ -427,7 +433,7 @@ VN_ERROR_CODE vn100_getQuaternionMagnetic(Vn100* vn100, VnQuaternion* attitude, 
  * \param[out] acceleration The current sensor acceleration (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionAcceleration(Vn100* vn100, VnQuaternion* attitude, VnVector3* acceleration);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionAcceleration(Vn100* vn100, VnQuaternion* attitude, VnVector3* acceleration);
 
 /**
  * \brief Gets the values in the Quaternion and Angular Rates register.
@@ -437,7 +443,7 @@ VN_ERROR_CODE vn100_getQuaternionAcceleration(Vn100* vn100, VnQuaternion* attitu
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Quaternion, Magnetic and Acceleration register.
@@ -448,7 +454,7 @@ VN_ERROR_CODE vn100_getQuaternionAngularRate(Vn100* vn100, VnQuaternion* attitud
  * \param[out] acceleration The current sensor acceleration (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionMagneticAcceleration(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* acceleration);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionMagneticAcceleration(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* acceleration);
 
 /**
  * \brief Gets the values in the Quaternion, Acceleration and Angular Rates register.
@@ -459,7 +465,7 @@ VN_ERROR_CODE vn100_getQuaternionMagneticAcceleration(Vn100* vn100, VnQuaternion
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionAccelerationAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionAccelerationAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Quaternion, Magnetic, Acceleration and Angular Rates register.
@@ -471,7 +477,7 @@ VN_ERROR_CODE vn100_getQuaternionAccelerationAngularRate(Vn100* vn100, VnQuatern
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getQuaternionMagneticAccelerationAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getQuaternionMagneticAccelerationAngularRate(Vn100* vn100, VnQuaternion* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Attitude (Directional Cosine Matrix) register.
@@ -480,7 +486,7 @@ VN_ERROR_CODE vn100_getQuaternionMagneticAccelerationAngularRate(Vn100* vn100, V
  * \param[out] attitude The current sensor attitude (DCM) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getDirectionCosineMatrix(Vn100* vn100, VnMatrix3x3* attitude);
+DLL_EXPORT VN_ERROR_CODE vn100_getDirectionCosineMatrix(Vn100* vn100, VnMatrix3x3* attitude);
 
 /**
  * \brief Gets the values in the Magnetic Measurements register.
@@ -489,7 +495,7 @@ VN_ERROR_CODE vn100_getDirectionCosineMatrix(Vn100* vn100, VnMatrix3x3* attitude
  * \param[out] magnetic The current sensor magnetic (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagnetic(Vn100* vn100, VnVector3* magnetic);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagnetic(Vn100* vn100, VnVector3* magnetic);
 
 /**
  * \brief Gets the values in the Acceleration Measurements register.
@@ -498,7 +504,7 @@ VN_ERROR_CODE vn100_getMagnetic(Vn100* vn100, VnVector3* magnetic);
  * \param[out] acceleration The current sensor acceleration (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAcceleration(Vn100* vn100, VnVector3* acceleration);
+DLL_EXPORT VN_ERROR_CODE vn100_getAcceleration(Vn100* vn100, VnVector3* acceleration);
 
 /**
  * \brief Gets the values in the Angular Rate Measurements register.
@@ -507,7 +513,7 @@ VN_ERROR_CODE vn100_getAcceleration(Vn100* vn100, VnVector3* acceleration);
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAngularRate(Vn100* vn100, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getAngularRate(Vn100* vn100, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Magnetic, Acceleration and Angular Rates register.
@@ -518,7 +524,7 @@ VN_ERROR_CODE vn100_getAngularRate(Vn100* vn100, VnVector3* angularRate);
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagneticAccelerationAngularRate(Vn100* vn100, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagneticAccelerationAngularRate(Vn100* vn100, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Magnetic and Gravity Reference Vectors register.
@@ -528,7 +534,7 @@ VN_ERROR_CODE vn100_getMagneticAccelerationAngularRate(Vn100* vn100, VnVector3* 
  * \param[out] gravityReference The current sensor gravity reference vector (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagneticGravityReferenceVectors(Vn100* vn100, VnVector3* magneticReference, VnVector3* gravityReference);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagneticGravityReferenceVectors(Vn100* vn100, VnVector3* magneticReference, VnVector3* gravityReference);
 
 /**
  * \brief Sets the values of the Magnetic and Gravity Reference Vectors register.
@@ -541,7 +547,7 @@ VN_ERROR_CODE vn100_getMagneticGravityReferenceVectors(Vn100* vn100, VnVector3* 
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setMagneticGravityReferenceVectors(Vn100* vn100, VnVector3 magneticReference, VnVector3 gravityReference, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setMagneticGravityReferenceVectors(Vn100* vn100, VnVector3 magneticReference, VnVector3 gravityReference, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Filter Measurement Variance Parameters register.
@@ -553,7 +559,7 @@ VN_ERROR_CODE vn100_setMagneticGravityReferenceVectors(Vn100* vn100, VnVector3 m
  * \param[out] accelerationVariance The current sensor acceleration variance (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFilterMeasurementVarianceParameters(Vn100* vn100, double* angularWalkVariance, VnVector3* angularRateVariance, VnVector3* magneticVariance, VnVector3* accelerationVariance);
+DLL_EXPORT VN_ERROR_CODE vn100_getFilterMeasurementVarianceParameters(Vn100* vn100, double* angularWalkVariance, VnVector3* angularRateVariance, VnVector3* magneticVariance, VnVector3* accelerationVariance);
 
 /**
  * \brief Sets the values of the Filter Measurement Variance Parameters register.
@@ -568,7 +574,7 @@ VN_ERROR_CODE vn100_getFilterMeasurementVarianceParameters(Vn100* vn100, double*
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setFilterMeasurementVarianceParameters(Vn100* vn100, double angularWalkVariance, VnVector3 angularRateVariance, VnVector3 magneticVariance, VnVector3 accelerationVariance, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setFilterMeasurementVarianceParameters(Vn100* vn100, double angularWalkVariance, VnVector3 angularRateVariance, VnVector3 magneticVariance, VnVector3 accelerationVariance, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Magnetic Hard/Soft Iron Compensation Parameters register.
@@ -578,7 +584,7 @@ VN_ERROR_CODE vn100_setFilterMeasurementVarianceParameters(Vn100* vn100, double 
  * \param[out] b The current sensor B vector values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagneticHardSoftIronCompensationParameters(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagneticHardSoftIronCompensationParameters(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
 
 /**
  * \brief Sets the values of the Magnetic Hard/Soft Iron Compensation Parameters register.
@@ -591,7 +597,7 @@ VN_ERROR_CODE vn100_getMagneticHardSoftIronCompensationParameters(Vn100* vn100, 
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setMagneticHardSoftIronCompensationParameters(Vn100* vn100, VnMatrix3x3 c, VnVector3 b, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setMagneticHardSoftIronCompensationParameters(Vn100* vn100, VnMatrix3x3 c, VnVector3 b, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Filter Active Tuning Parameters register.
@@ -603,7 +609,7 @@ VN_ERROR_CODE vn100_setMagneticHardSoftIronCompensationParameters(Vn100* vn100, 
  * \param[out] accelerationMemory The acceleration disturbance memory value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFilterActiveTuningParameters(Vn100* vn100, double* magneticGain, double* accelerationGain, double* magneticMemory, double* accelerationMemory);
+DLL_EXPORT VN_ERROR_CODE vn100_getFilterActiveTuningParameters(Vn100* vn100, double* magneticGain, double* accelerationGain, double* magneticMemory, double* accelerationMemory);
 
 /**
  * \brief Sets the values of the Filter Active Tuning Parameters register.
@@ -618,7 +624,7 @@ VN_ERROR_CODE vn100_getFilterActiveTuningParameters(Vn100* vn100, double* magnet
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setFilterActiveTuningParameters(Vn100* vn100, double magneticGain, double accelerationGain, double magneticMemory, double accelerationMemory, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setFilterActiveTuningParameters(Vn100* vn100, double magneticGain, double accelerationGain, double magneticMemory, double accelerationMemory, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Accelerometer Compensation register.
@@ -628,7 +634,7 @@ VN_ERROR_CODE vn100_setFilterActiveTuningParameters(Vn100* vn100, double magneti
  * \param[out] b The current sensor B vector values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAccelerometerCompensation(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
+DLL_EXPORT VN_ERROR_CODE vn100_getAccelerometerCompensation(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
 
 /**
  * \brief Sets the values of the Accelerometer Compensation register.
@@ -641,7 +647,7 @@ VN_ERROR_CODE vn100_getAccelerometerCompensation(Vn100* vn100, VnMatrix3x3* c, V
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setAccelerometerCompensation(Vn100* vn100, VnMatrix3x3 c, VnVector3 b, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setAccelerometerCompensation(Vn100* vn100, VnMatrix3x3 c, VnVector3 b, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Reference Frame Rotation register.
@@ -650,7 +656,7 @@ VN_ERROR_CODE vn100_setAccelerometerCompensation(Vn100* vn100, VnMatrix3x3 c, Vn
  * \param[out] c The current sensor C matrix values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getReferenceFrameRotation(Vn100* vn100, VnMatrix3x3* c);
+DLL_EXPORT VN_ERROR_CODE vn100_getReferenceFrameRotation(Vn100* vn100, VnMatrix3x3* c);
 
 /**
  * \brief Sets the values of the Reference Frame Rotation register.
@@ -662,7 +668,7 @@ VN_ERROR_CODE vn100_getReferenceFrameRotation(Vn100* vn100, VnMatrix3x3* c);
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setReferenceFrameRotation(Vn100* vn100, VnMatrix3x3 c, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setReferenceFrameRotation(Vn100* vn100, VnMatrix3x3 c, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Yaw,Pitch,Roll, Magnetic, Acceleration and Angular Rates register.
@@ -674,7 +680,7 @@ VN_ERROR_CODE vn100_setReferenceFrameRotation(Vn100* vn100, VnMatrix3x3 c, VN_BO
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRollMagneticAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRollMagneticAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Accelerometer Gain register.
@@ -683,7 +689,7 @@ VN_ERROR_CODE vn100_getYawPitchRollMagneticAccelerationAngularRate(Vn100* vn100,
  * \param[out] accelerometerGain The accelerometer gain mode value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getAccelerometerGain(Vn100* vn100, unsigned int* accelerometerGain);
+DLL_EXPORT VN_ERROR_CODE vn100_getAccelerometerGain(Vn100* vn100, unsigned int* accelerometerGain);
 
 /**
  * \brief Sets the values of the Accelerometer Gain register.
@@ -695,7 +701,7 @@ VN_ERROR_CODE vn100_getAccelerometerGain(Vn100* vn100, unsigned int* acceleromet
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setAccelerometerGain(Vn100* vn100, unsigned int accelerometerGain, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setAccelerometerGain(Vn100* vn100, unsigned int accelerometerGain, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Yaw,Pitch,Roll, and Calibrated Measurements register.
@@ -708,7 +714,7 @@ VN_ERROR_CODE vn100_setAccelerometerGain(Vn100* vn100, unsigned int acceleromete
  * \param[out] temperature The temperature value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRollAndCalibratedMeasurements(Vn100* vn100, VnYpr* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, double* temperature);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRollAndCalibratedMeasurements(Vn100* vn100, VnYpr* attitude, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, double* temperature);
 
 /**
  * \brief Gets the values in the Communication Protocol Control register.
@@ -723,7 +729,7 @@ VN_ERROR_CODE vn100_getYawPitchRollAndCalibratedMeasurements(Vn100* vn100, VnYpr
  * \param[out] errorMode The error mode value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getCommunicationProtocolControl(Vn100* vn100, unsigned char* serialCount, unsigned char* serialStatus, unsigned char* spiCount, unsigned char* spiStatus, unsigned char* serialChecksum, unsigned char* spiChecksum, unsigned char* errorMode);
+DLL_EXPORT VN_ERROR_CODE vn100_getCommunicationProtocolControl(Vn100* vn100, unsigned char* serialCount, unsigned char* serialStatus, unsigned char* spiCount, unsigned char* spiStatus, unsigned char* serialChecksum, unsigned char* spiChecksum, unsigned char* errorMode);
 
 /**
  * \brief Sets the values of the Communication Protocol Control register.
@@ -741,7 +747,7 @@ VN_ERROR_CODE vn100_getCommunicationProtocolControl(Vn100* vn100, unsigned char*
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setCommunicationProtocolControl(Vn100* vn100, unsigned char serialCount, unsigned char serialStatus, unsigned char spiCount, unsigned char spiStatus, unsigned char serialChecksum, unsigned char spiChecksum, unsigned char errorMode, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setCommunicationProtocolControl(Vn100* vn100, unsigned char serialCount, unsigned char serialStatus, unsigned char spiCount, unsigned char spiStatus, unsigned char serialChecksum, unsigned char spiChecksum, unsigned char errorMode, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Communication Protocol Status register.
@@ -771,7 +777,7 @@ VN_ERROR_CODE vn100_setCommunicationProtocolControl(Vn100* vn100, unsigned char 
  * \param[out] systemError15 The SystemError 15 value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getCommunicationProtocolStatus(Vn100* vn100, unsigned int* numOfParsedSerialMessages, unsigned int* numOfParsedSpiMessages, unsigned char* maxUsageSerialRxBuffer, unsigned char* maxUsageSerialTxBuffer, unsigned char* maxUsageSpiRxBuffer, unsigned char* maxUsageSpiTxBuffer, unsigned short* systemError0, unsigned short* systemError1, unsigned short* systemError2, unsigned short* systemError3, unsigned short* systemError4, unsigned short* systemError5, unsigned short* systemError6, unsigned short* systemError7, unsigned short* systemError8, unsigned short* systemError9, unsigned short* systemError10, unsigned short* systemError11, unsigned short* systemError12, unsigned short* systemError13, unsigned short* systemError14, unsigned short* systemError15);
+DLL_EXPORT VN_ERROR_CODE vn100_getCommunicationProtocolStatus(Vn100* vn100, unsigned int* numOfParsedSerialMessages, unsigned int* numOfParsedSpiMessages, unsigned char* maxUsageSerialRxBuffer, unsigned char* maxUsageSerialTxBuffer, unsigned char* maxUsageSpiRxBuffer, unsigned char* maxUsageSpiTxBuffer, unsigned short* systemError0, unsigned short* systemError1, unsigned short* systemError2, unsigned short* systemError3, unsigned short* systemError4, unsigned short* systemError5, unsigned short* systemError6, unsigned short* systemError7, unsigned short* systemError8, unsigned short* systemError9, unsigned short* systemError10, unsigned short* systemError11, unsigned short* systemError12, unsigned short* systemError13, unsigned short* systemError14, unsigned short* systemError15);
 
 /**
  * \brief Sets the values of the Communication Protocol Status register.
@@ -804,7 +810,7 @@ VN_ERROR_CODE vn100_getCommunicationProtocolStatus(Vn100* vn100, unsigned int* n
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setCommunicationProtocolStatus(Vn100* vn100, unsigned int numOfParsedSerialMessages, unsigned int numOfParsedSpiMessages, unsigned char maxUsageSerialRxBuffer, unsigned char maxUsageSerialTxBuffer, unsigned char maxUsageSpiRxBuffer, unsigned char maxUsageSpiTxBuffer, unsigned short systemError0, unsigned short systemError1, unsigned short systemError2, unsigned short systemError3, unsigned short systemError4, unsigned short systemError5, unsigned short systemError6, unsigned short systemError7, unsigned short systemError8, unsigned short systemError9, unsigned short systemError10, unsigned short systemError11, unsigned short systemError12, unsigned short systemError13, unsigned short systemError14, unsigned short systemError15, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setCommunicationProtocolStatus(Vn100* vn100, unsigned int numOfParsedSerialMessages, unsigned int numOfParsedSpiMessages, unsigned char maxUsageSerialRxBuffer, unsigned char maxUsageSerialTxBuffer, unsigned char maxUsageSpiRxBuffer, unsigned char maxUsageSpiTxBuffer, unsigned short systemError0, unsigned short systemError1, unsigned short systemError2, unsigned short systemError3, unsigned short systemError4, unsigned short systemError5, unsigned short systemError6, unsigned short systemError7, unsigned short systemError8, unsigned short systemError9, unsigned short systemError10, unsigned short systemError11, unsigned short systemError12, unsigned short systemError13, unsigned short systemError14, unsigned short systemError15, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Synchronization Control register.
@@ -821,7 +827,7 @@ VN_ERROR_CODE vn100_setCommunicationProtocolStatus(Vn100* vn100, unsigned int nu
  * \param[out] reserved1 The reserved value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getSynchronizationControl(Vn100* vn100, unsigned char* syncInMode, unsigned char* syncInEdge, unsigned short* syncInSkipFactor, unsigned int* reserved0, unsigned char* syncOutMode, unsigned char* syncOutPolarity, unsigned short* syncOutSkipFactor, unsigned int* syncOutPulseWidth, unsigned int* reserved1);
+DLL_EXPORT VN_ERROR_CODE vn100_getSynchronizationControl(Vn100* vn100, unsigned char* syncInMode, unsigned char* syncInEdge, unsigned short* syncInSkipFactor, unsigned int* reserved0, unsigned char* syncOutMode, unsigned char* syncOutPolarity, unsigned short* syncOutSkipFactor, unsigned int* syncOutPulseWidth, unsigned int* reserved1);
 
 /**
  * \brief Sets the values of the Synchronization Control register.
@@ -841,7 +847,7 @@ VN_ERROR_CODE vn100_getSynchronizationControl(Vn100* vn100, unsigned char* syncI
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setSynchronizationControl(Vn100* vn100, unsigned char syncInMode, unsigned char syncInEdge, unsigned short syncInSkipFactor, unsigned int reserved0, unsigned char syncOutMode, unsigned char syncOutPolarity, unsigned short syncOutSkipFactor, unsigned int syncOutPulseWidth, unsigned int reserved1, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setSynchronizationControl(Vn100* vn100, unsigned char syncInMode, unsigned char syncInEdge, unsigned short syncInSkipFactor, unsigned int reserved0, unsigned char syncOutMode, unsigned char syncOutPolarity, unsigned short syncOutSkipFactor, unsigned int syncOutPulseWidth, unsigned int reserved1, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Synchronization Status register.
@@ -852,7 +858,7 @@ VN_ERROR_CODE vn100_setSynchronizationControl(Vn100* vn100, unsigned char syncIn
  * \param[out] syncOutCount The synchronization out count value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getSynchronizationStatus(Vn100* vn100, unsigned int* syncInCount, unsigned int* syncInTime, unsigned int* syncOutCount);
+DLL_EXPORT VN_ERROR_CODE vn100_getSynchronizationStatus(Vn100* vn100, unsigned int* syncInCount, unsigned int* syncInTime, unsigned int* syncOutCount);
 
 /**
  * \brief Sets the values of the Synchronization Status register.
@@ -866,7 +872,7 @@ VN_ERROR_CODE vn100_getSynchronizationStatus(Vn100* vn100, unsigned int* syncInC
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setSynchronizationStatus(Vn100* vn100, unsigned int syncInCount, unsigned int syncInTime, unsigned int syncOutCount, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setSynchronizationStatus(Vn100* vn100, unsigned int syncInCount, unsigned int syncInTime, unsigned int syncOutCount, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Filter Basic Control register.
@@ -879,7 +885,7 @@ VN_ERROR_CODE vn100_setSynchronizationStatus(Vn100* vn100, unsigned int syncInCo
  * \param[out] angularRateLimit The current sensor angular rate saturation liimit (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFilterBasicControl(Vn100* vn100, unsigned char* magneticMode, unsigned char* externalMagnetometerMode, unsigned char* externalAccelerometerMode, unsigned char* externalGyroscopeMode, VnVector3* angularRateLimit);
+DLL_EXPORT VN_ERROR_CODE vn100_getFilterBasicControl(Vn100* vn100, unsigned char* magneticMode, unsigned char* externalMagnetometerMode, unsigned char* externalAccelerometerMode, unsigned char* externalGyroscopeMode, VnVector3* angularRateLimit);
 
 /**
  * \brief Sets the values of the Filter Basic Control register.
@@ -895,7 +901,7 @@ VN_ERROR_CODE vn100_getFilterBasicControl(Vn100* vn100, unsigned char* magneticM
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setFilterBasicControl(Vn100* vn100, unsigned char magneticMode, unsigned char externalMagnetometerMode, unsigned char externalAccelerometerMode, unsigned char externalGyroscopeMode, VnVector3 angularRateLimit, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setFilterBasicControl(Vn100* vn100, unsigned char magneticMode, unsigned char externalMagnetometerMode, unsigned char externalAccelerometerMode, unsigned char externalGyroscopeMode, VnVector3 angularRateLimit, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Basic Control register.
@@ -907,7 +913,7 @@ VN_ERROR_CODE vn100_setFilterBasicControl(Vn100* vn100, unsigned char magneticMo
  * \param[out] tuningMode The tuning mode value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeControl(Vn100* vn100, unsigned char* enable, unsigned char* headingMode, unsigned char* filteringMode, unsigned char* tuningMode);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeControl(Vn100* vn100, unsigned char* enable, unsigned char* headingMode, unsigned char* filteringMode, unsigned char* tuningMode);
 
 /**
  * \brief Sets the values of the VPE Basic Control register.
@@ -922,7 +928,7 @@ VN_ERROR_CODE vn100_getVpeControl(Vn100* vn100, unsigned char* enable, unsigned 
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeControl(Vn100* vn100, unsigned char enable, unsigned char headingMode, unsigned char filteringMode, unsigned char tuningMode, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeControl(Vn100* vn100, unsigned char enable, unsigned char headingMode, unsigned char filteringMode, unsigned char tuningMode, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Magnetometer Basic Tuning register.
@@ -933,7 +939,7 @@ VN_ERROR_CODE vn100_setVpeControl(Vn100* vn100, unsigned char enable, unsigned c
  * \param[out] adaptiveFiltering The current sensor magnetometer adaptive filtering (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3* baseTuning, VnVector3* adaptiveTuning, VnVector3* adaptiveFiltering);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3* baseTuning, VnVector3* adaptiveTuning, VnVector3* adaptiveFiltering);
 
 /**
  * \brief Sets the values of the VPE Magnetometer Basic Tuning register.
@@ -947,7 +953,7 @@ VN_ERROR_CODE vn100_getVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3* baseT
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3 baseTuning, VnVector3 adaptiveTuning, VnVector3 adaptiveFiltering, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3 baseTuning, VnVector3 adaptiveTuning, VnVector3 adaptiveFiltering, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Magnetometer Advanced Tuning register.
@@ -960,7 +966,7 @@ VN_ERROR_CODE vn100_setVpeMagnetometerBasicTuning(Vn100* vn100, VnVector3 baseTu
  * \param[out] maximumTuning The MaxTuning value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3* minimumFiltering, VnVector3* maximumFiltering, float* maximumAdaptRate, float* disturbanceWindow, float* maximumTuning);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3* minimumFiltering, VnVector3* maximumFiltering, float* maximumAdaptRate, float* disturbanceWindow, float* maximumTuning);
 
 /**
  * \brief Sets the values of the VPE Magnetometer Advanced Tuning register.
@@ -976,7 +982,7 @@ VN_ERROR_CODE vn100_getVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3* mi
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3 minimumFiltering, VnVector3 maximumFiltering, float maximumAdaptRate, float disturbanceWindow, float maximumTuning, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3 minimumFiltering, VnVector3 maximumFiltering, float maximumAdaptRate, float disturbanceWindow, float maximumTuning, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Accelerometer Basic Tuning register.
@@ -987,7 +993,7 @@ VN_ERROR_CODE vn100_setVpeMagnetometerAdvancedTuning(Vn100* vn100, VnVector3 min
  * \param[out] adaptiveFiltering The current sensor accelerometer adaptive filtering (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3* baseTuning, VnVector3* adaptiveTuning, VnVector3* adaptiveFiltering);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3* baseTuning, VnVector3* adaptiveTuning, VnVector3* adaptiveFiltering);
 
 /**
  * \brief Sets the values of the VPE Accelerometer Basic Tuning register.
@@ -1001,7 +1007,7 @@ VN_ERROR_CODE vn100_getVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3* base
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3 baseTuning, VnVector3 adaptiveTuning, VnVector3 adaptiveFiltering, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3 baseTuning, VnVector3 adaptiveTuning, VnVector3 adaptiveFiltering, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Accelerometer Advanced Tuning register.
@@ -1014,7 +1020,7 @@ VN_ERROR_CODE vn100_setVpeAccelerometerBasicTuning(Vn100* vn100, VnVector3 baseT
  * \param[out] maximumTuning The MaxTuning value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3* minimumFiltering, VnVector3* maximumFiltering, float* maximumAdaptRate, float* disturbanceWindow, float* maximumTuning);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3* minimumFiltering, VnVector3* maximumFiltering, float* maximumAdaptRate, float* disturbanceWindow, float* maximumTuning);
 
 /**
  * \brief Sets the values of the VPE Accelerometer Advanced Tuning register.
@@ -1030,7 +1036,7 @@ VN_ERROR_CODE vn100_getVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3* m
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3 minimumFiltering, VnVector3 maximumFiltering, float maximumAdaptRate, float disturbanceWindow, float maximumTuning, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3 minimumFiltering, VnVector3 maximumFiltering, float maximumAdaptRate, float disturbanceWindow, float maximumTuning, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the VPE Gyro Basic Tuning register.
@@ -1041,7 +1047,7 @@ VN_ERROR_CODE vn100_setVpeAccelerometerAdvancedTuning(Vn100* vn100, VnVector3 mi
  * \param[out] adaptiveTuning The current sensor gyroscope adaptive tuning (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getVpeGyroBasicTuning(Vn100* vn100, VnVector3* varianceAngularWalk, VnVector3* baseTuning, VnVector3* adaptiveTuning);
+DLL_EXPORT VN_ERROR_CODE vn100_getVpeGyroBasicTuning(Vn100* vn100, VnVector3* varianceAngularWalk, VnVector3* baseTuning, VnVector3* adaptiveTuning);
 
 /**
  * \brief Sets the values of the VPE Gyro Basic Tuning register.
@@ -1055,7 +1061,7 @@ VN_ERROR_CODE vn100_getVpeGyroBasicTuning(Vn100* vn100, VnVector3* varianceAngul
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setVpeGyroBasicTuning(Vn100* vn100, VnVector3 varianceAngularWalk, VnVector3 baseTuning, VnVector3 adaptiveTuning, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setVpeGyroBasicTuning(Vn100* vn100, VnVector3 varianceAngularWalk, VnVector3 baseTuning, VnVector3 adaptiveTuning, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Filter Status register.
@@ -1070,7 +1076,7 @@ VN_ERROR_CODE vn100_setVpeGyroBasicTuning(Vn100* vn100, VnVector3 varianceAngula
  * \param[out] accelUncertainty The AccelUncertainty value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFilterStatus(Vn100* vn100, unsigned short* solutionStatus, float* yawUncertainty, float* pitchUncertainty, float* rollUncertainty, float* gyroBiasUncertainty, float* magUncertainty, float* accelUncertainty);
+DLL_EXPORT VN_ERROR_CODE vn100_getFilterStatus(Vn100* vn100, unsigned short* solutionStatus, float* yawUncertainty, float* pitchUncertainty, float* rollUncertainty, float* gyroBiasUncertainty, float* magUncertainty, float* accelUncertainty);
 
 /**
  * \brief Gets the values in the Filter Startup Gyro Bias register.
@@ -1079,7 +1085,7 @@ VN_ERROR_CODE vn100_getFilterStatus(Vn100* vn100, unsigned short* solutionStatus
  * \param[out] gyroBias The current sensor gyroscope startup bias (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getFilterStartupGyroBias(Vn100* vn100, VnVector3* gyroBias);
+DLL_EXPORT VN_ERROR_CODE vn100_getFilterStartupGyroBias(Vn100* vn100, VnVector3* gyroBias);
 
 /**
  * \brief Sets the values of the Filter Startup Gyro Bias register.
@@ -1091,7 +1097,7 @@ VN_ERROR_CODE vn100_getFilterStartupGyroBias(Vn100* vn100, VnVector3* gyroBias);
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setFilterStartupGyroBias(Vn100* vn100, VnVector3 gyroBias, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setFilterStartupGyroBias(Vn100* vn100, VnVector3 gyroBias, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Magnetometer Basic Calibration Control register.
@@ -1102,7 +1108,7 @@ VN_ERROR_CODE vn100_setFilterStartupGyroBias(Vn100* vn100, VnVector3 gyroBias, V
  * \param[out] convergeRate The ConvergeRate value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagnetometerBasicCalibrationControl(Vn100* vn100, unsigned char* hsiMode, unsigned char* hsiOutput, unsigned char* convergeRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagnetometerBasicCalibrationControl(Vn100* vn100, unsigned char* hsiMode, unsigned char* hsiOutput, unsigned char* convergeRate);
 
 /**
  * \brief Sets the values of the Magnetometer Basic Calibration Control register.
@@ -1116,7 +1122,7 @@ VN_ERROR_CODE vn100_getMagnetometerBasicCalibrationControl(Vn100* vn100, unsigne
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setMagnetometerBasicCalibrationControl(Vn100* vn100, unsigned char hsiMode, unsigned char hsiOutput, unsigned char convergeRate, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setMagnetometerBasicCalibrationControl(Vn100* vn100, unsigned char hsiMode, unsigned char hsiOutput, unsigned char convergeRate, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Magnetometer Calibration Status register.
@@ -1136,7 +1142,7 @@ VN_ERROR_CODE vn100_setMagnetometerBasicCalibrationControl(Vn100* vn100, unsigne
  * \param[out] bin7 The number of measurements in bin 8 value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getMagnetometerCalibrationStatus(Vn100* vn100, unsigned char* lastBin, unsigned short* numOfMeasurements, float* avgResidual, VnVector3* lastMeasurement, unsigned char* bin0, unsigned char* bin1, unsigned char* bin2, unsigned char* bin3, unsigned char* bin4, unsigned char* bin5, unsigned char* bin6, unsigned char* bin7);
+DLL_EXPORT VN_ERROR_CODE vn100_getMagnetometerCalibrationStatus(Vn100* vn100, unsigned char* lastBin, unsigned short* numOfMeasurements, float* avgResidual, VnVector3* lastMeasurement, unsigned char* bin0, unsigned char* bin1, unsigned char* bin2, unsigned char* bin3, unsigned char* bin4, unsigned char* bin5, unsigned char* bin6, unsigned char* bin7);
 
 /**
  * \brief Gets the values in the Calculated Magnetometer Calibration register.
@@ -1146,7 +1152,7 @@ VN_ERROR_CODE vn100_getMagnetometerCalibrationStatus(Vn100* vn100, unsigned char
  * \param[out] b The current sensor B vector values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getCalculatedMagnetometerCalibration(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
+DLL_EXPORT VN_ERROR_CODE vn100_getCalculatedMagnetometerCalibration(Vn100* vn100, VnMatrix3x3* c, VnVector3* b);
 
 /**
  * \brief Gets the values in the Indoor Heading Mode Control register.
@@ -1156,7 +1162,7 @@ VN_ERROR_CODE vn100_getCalculatedMagnetometerCalibration(Vn100* vn100, VnMatrix3
  * \param[out] reserved The reserved value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getIndoorHeadingModeControl(Vn100* vn100, float* maxRateError, float* reserved);
+DLL_EXPORT VN_ERROR_CODE vn100_getIndoorHeadingModeControl(Vn100* vn100, float* maxRateError, float* reserved);
 
 /**
  * \brief Sets the values of the Indoor Heading Mode Control register.
@@ -1169,7 +1175,7 @@ VN_ERROR_CODE vn100_getIndoorHeadingModeControl(Vn100* vn100, float* maxRateErro
        return after sending out the command.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_setIndoorHeadingModeControl(Vn100* vn100, float maxRateError, float reserved, VN_BOOL waitForResponse);
+DLL_EXPORT VN_ERROR_CODE vn100_setIndoorHeadingModeControl(Vn100* vn100, float maxRateError, float reserved, VN_BOOL waitForResponse);
 
 /**
  * \brief Gets the values in the Yaw,Pitch,Roll, True Body Acceleration and Angular Rates register.
@@ -1180,7 +1186,7 @@ VN_ERROR_CODE vn100_setIndoorHeadingModeControl(Vn100* vn100, float maxRateError
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRollTrueBodyAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* bodyAcceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRollTrueBodyAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* bodyAcceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Yaw,Pitch,Roll, True Inertial Acceleration and Angular Rates register.
@@ -1191,7 +1197,7 @@ VN_ERROR_CODE vn100_getYawPitchRollTrueBodyAccelerationAngularRate(Vn100* vn100,
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRollTrueInertialAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* inertialAcceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRollTrueInertialAccelerationAngularRate(Vn100* vn100, VnYpr* attitude, VnVector3* inertialAcceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Yaw,Pitch,Roll and Inertial Calibrated Measurements register.
@@ -1203,7 +1209,7 @@ VN_ERROR_CODE vn100_getYawPitchRollTrueInertialAccelerationAngularRate(Vn100* vn
  * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getYawPitchRollInertialCalibratedMeasurements(Vn100* vn100, VnYpr* attitude, VnVector3* inertialMagnetic, VnVector3* inertialAcceleration, VnVector3* angularRate);
+DLL_EXPORT VN_ERROR_CODE vn100_getYawPitchRollInertialCalibratedMeasurements(Vn100* vn100, VnYpr* attitude, VnVector3* inertialMagnetic, VnVector3* inertialAcceleration, VnVector3* angularRate);
 
 /**
  * \brief Gets the values in the Raw Voltage Measurements register.
@@ -1215,7 +1221,7 @@ VN_ERROR_CODE vn100_getYawPitchRollInertialCalibratedMeasurements(Vn100* vn100, 
  * \param[out] temperature The temperature raw voltages value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getRawVoltageMeasurements(Vn100* vn100, VnVector3* magnetometer, VnVector3* accelerometer, VnVector3* gyroscope, float* temperature);
+DLL_EXPORT VN_ERROR_CODE vn100_getRawVoltageMeasurements(Vn100* vn100, VnVector3* magnetometer, VnVector3* accelerometer, VnVector3* gyroscope, float* temperature);
 
 /**
  * \brief Gets the values in the Calibrated IMU Measurements register.
@@ -1227,7 +1233,7 @@ VN_ERROR_CODE vn100_getRawVoltageMeasurements(Vn100* vn100, VnVector3* magnetome
  * \param[out] temperature The temperature value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getCalibratedImuMeasurements(Vn100* vn100, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, float* temperature);
+DLL_EXPORT VN_ERROR_CODE vn100_getCalibratedImuMeasurements(Vn100* vn100, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, float* temperature);
 
 /**
  * \brief Gets the values in the Kalman Filter State Vector register.
@@ -1237,7 +1243,7 @@ VN_ERROR_CODE vn100_getCalibratedImuMeasurements(Vn100* vn100, VnVector3* magnet
  * \param[out] gyroscopeBias The current sensor gyroscope bias (X,Y,Z) values.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getKalmanFilterStateVector(Vn100* vn100, VnQuaternion* attitude, VnVector3* gyroscopeBias);
+DLL_EXPORT VN_ERROR_CODE vn100_getKalmanFilterStateVector(Vn100* vn100, VnQuaternion* attitude, VnVector3* gyroscopeBias);
 
 /**
  * \brief Gets the values in the Kalman Filter Covariance Matrix Diagonal register.
@@ -1251,7 +1257,102 @@ VN_ERROR_CODE vn100_getKalmanFilterStateVector(Vn100* vn100, VnQuaternion* attit
  * \param[out] p55 The P[5,5] value of the sensor.
  * \return VectorNav error code.
  */
-VN_ERROR_CODE vn100_getKalmanFilterCovarianceMatrixDiagonal(Vn100* vn100, float* p00, float* p11, float* p22, float* p33, float* p44, float* p55);
+DLL_EXPORT VN_ERROR_CODE vn100_getKalmanFilterCovarianceMatrixDiagonal(Vn100* vn100, float* p00, float* p11, float* p22, float* p33, float* p44, float* p55);
+
+/**
+ * \brief Gets the values in the Calibrated Sensor Measurements register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[out] magnetic The current sensor magnetic (X,Y,Z) values.
+ * \param[out] acceleration The current sensor acceleration (X,Y,Z) values.
+ * \param[out] angularRate The current sensor angular rate (X,Y,Z) values.
+ * \param[out] temperature The temperature value of the sensor.
+ * \param[out] pressure The pressure value of the sensor.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_getCalibratedSensorMeasurements(Vn100* vn100, VnVector3* magnetic, VnVector3* acceleration, VnVector3* angularRate, float* temperature, float* pressure);
+
+/**
+ * \brief Gets the values in the GPS Configuration register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[out] mode The mode value of the sensor.
+ * \param[out] nmeaSerial1 The NMEA_Serial1 value of the sensor.
+ * \param[out] nmeaSerial2 The NMEA_Serial2 value of the sensor.
+ * \param[out] nmeaRate The NMEA_Rate value of the sensor.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_getGpsConfiguration(Vn100* vn100, unsigned char* mode, unsigned char* nmeaSerial1, unsigned char* nmeaSerial2, unsigned char* nmeaRate);
+
+/**
+ * \brief Sets the values of the GPS Configuration register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[in] mode Value for the mode field.
+ * \param[in] nmeaSerial1 Value for the NMEA_Serial1 field.
+ * \param[in] nmeaSerial2 Value for the NMEA_Serial2 field.
+ * \param[in] nmeaRate Value for the NMEA_Rate field.
+ * \param[in] waitForResponse Signals if the function should block until a response is
+       received from the sensor. TRUE to block for a response; FALSE to immediately
+       return after sending out the command.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_setGpsConfiguration(Vn100* vn100, unsigned char mode, unsigned char nmeaSerial1, unsigned char nmeaSerial2, unsigned char nmeaRate, VN_BOOL waitForResponse);
+
+/**
+ * \brief Gets the values in the GPS Antenna Offset register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[out] position The current sensor relative postion of GPS antenna (X,Y,Z) values.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_getGpsAntennaOffset(Vn100* vn100, VnVector3* position);
+
+/**
+ * \brief Sets the values of the GPS Antenna Offset register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[in] position The relative postion of GPS antenna (X,Y,Z) values to write to the sensor.
+ * \param[in] waitForResponse Signals if the function should block until a response is
+       received from the sensor. TRUE to block for a response; FALSE to immediately
+       return after sending out the command.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_setGpsAntennaOffset(Vn100* vn100, VnVector3 position, VN_BOOL waitForResponse);
+
+/**
+ * \brief Gets the values in the GPS Solution register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[out] gpsTime The GPS time of week in seconds value of the sensor.
+ * \param[out] gpsWeek The GPS week value of the sensor.
+ * \param[out] gpsFix The GPS fix type value of the sensor.
+ * \param[out] numberOfSatellites The number of GPS satellites used in solution value of the sensor.
+ * \param[out] lattitudeLongitudeAltitude The current sensor latitude, longitude, and altitude values.
+ * \param[out] nedVelocity The current sensor velocity measurements (X,Y,Z) in north, east, down directions values.
+ * \param[out] positionAccuracy The current sensor position accuracy (X,Y,Z) values.
+ * \param[out] speedAccuracy The speed accuracy estimate value of the sensor.
+ * \param[out] timeAccuracy The time accuracy estimate value of the sensor.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_getGpsSolution(Vn100* vn100, double* gpsTime, unsigned short* gpsWeek, unsigned char* gpsFix, unsigned char* numberOfSatellites, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, VnVector3* positionAccuracy, float* speedAccuracy, float* timeAccuracy);
+
+/**
+ * \brief Gets the values in the INS Solution register.
+ *
+ * \param[in] vn100 Pointer to the Vn100 control object.
+ * \param[out] gpsTime The GPS time of week in seconds value of the sensor.
+ * \param[out] gpsWeek The GPS week value of the sensor.
+ * \param[out] status The status flags for the INS filter value of the sensor.
+ * \param[out] ypr The current sensor heading, pitch, and roll values.
+ * \param[out] lattitudeLongitudeAltitude The current sensor latitude, longitude, and altitude values.
+ * \param[out] nedVelocity The current sensor velocity measurements (X,Y,Z) in north, east, down directions values.
+ * \param[out] attitudeUncertainty The attitude uncertainty value of the sensor.
+ * \param[out] positionUncertainty The position uncertainty value of the sensor.
+ * \param[out] velocityUncertainty The velocity uncertainty value of the sensor.
+ * \return VectorNav error code.
+ */
+DLL_EXPORT VN_ERROR_CODE vn100_getInsSolution(Vn100* vn100, double* gpsTime, unsigned short* gpsWeek, unsigned short* status, VnVector3* ypr, VnVector3* lattitudeLongitudeAltitude, VnVector3* nedVelocity, float* attitudeUncertainty, float* positionUncertainty, float* velocityUncertainty);
 
 
 #ifdef __cplusplus

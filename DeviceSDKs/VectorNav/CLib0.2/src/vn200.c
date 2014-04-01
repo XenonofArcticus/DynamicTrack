@@ -395,8 +395,6 @@ void* vn200_communicationHandler(void* vn200Obj)
 
 	vncp_event_signal(vn200Int->waitForThreadToStartServicingComPortEvent);
 
-	printf("%i\n", vn200Int->continueServicingComPort);
-
 	while (vn200Int->continueServicingComPort) {
 
 		unsigned int curResponsePos = 0;
@@ -1036,6 +1034,8 @@ VN_ERROR_CODE vn200_getHardwareRevision(Vn200* vn200, int* hardwareRevision)
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*hardwareRevision = atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1129,6 +1129,8 @@ VN_ERROR_CODE vn200_getSerialBaudRate(Vn200* vn200, unsigned int* serialBaudrate
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*serialBaudrate = (unsigned int) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1179,6 +1181,8 @@ VN_ERROR_CODE vn200_getAsynchronousDataOutputType(Vn200* vn200, unsigned int* as
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*asyncDataOutputType = (unsigned int) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1229,6 +1233,8 @@ VN_ERROR_CODE vn200_getAsynchronousDataOutputFrequency(Vn200* vn200, unsigned in
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*asyncDataOutputFrequency = (unsigned int) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1279,16 +1285,28 @@ VN_ERROR_CODE vn200_getMagneticGravityReferenceVectors(Vn200* vn200, VnVector3* 
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magneticReference->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magneticReference->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magneticReference->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	gravityReference->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	gravityReference->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	gravityReference->c2 = atof(result);
 
 	return VNERR_NO_ERROR;
@@ -1341,22 +1359,40 @@ VN_ERROR_CODE vn200_getReferenceFrameRotation(Vn200* vn200, VnMatrix3x3* c)
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c00 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c01 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c02 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c10 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c11 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c12 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c20 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c21 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	c->c22 = atof(result);
 
 	return VNERR_NO_ERROR;
@@ -1407,18 +1443,32 @@ VN_ERROR_CODE vn200_getCommunicationProtocolControl(Vn200* vn200, unsigned char*
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*serialCount = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*serialStatus = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*spiCount = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*spiStatus = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*serialChecksum = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*spiChecksum = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*errorMode = (unsigned char) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1481,22 +1531,40 @@ VN_ERROR_CODE vn200_getSynchronizationControl(Vn200* vn200, unsigned char* syncI
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncInMode = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncInEdge = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncInSkipFactor = (unsigned short) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*reserved0 = (unsigned int) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncOutMode = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncOutPolarity = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncOutSkipFactor = (unsigned short) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*syncOutPulseWidth = (unsigned int) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*reserved1 = (unsigned int) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1563,26 +1631,48 @@ VN_ERROR_CODE vn200_getCalibratedSensorMeasurements(Vn200* vn200, VnVector3* mag
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magnetic->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magnetic->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	magnetic->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	acceleration->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	acceleration->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	acceleration->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	angularRate->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	angularRate->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	angularRate->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*temperature = (float) atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*pressure = (float) atof(result);
 
 	return VNERR_NO_ERROR;
@@ -1610,12 +1700,20 @@ VN_ERROR_CODE vn200_getGpsConfiguration(Vn200* vn200, unsigned char* mode, unsig
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*mode = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*nmeaSerial1 = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*nmeaSerial2 = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*nmeaRate = (unsigned char) atoi(result);
 
 	return VNERR_NO_ERROR;
@@ -1672,10 +1770,16 @@ VN_ERROR_CODE vn200_getGpsAntennaOffset(Vn200* vn200, VnVector3* position)
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	position->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	position->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	position->c2 = atof(result);
 
 	return VNERR_NO_ERROR;
@@ -1726,34 +1830,64 @@ VN_ERROR_CODE vn200_getGpsSolution(Vn200* vn200, double* gpsTime, unsigned short
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*gpsTime = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*gpsWeek = (unsigned short) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*gpsFix = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*numberOfSatellites = (unsigned char) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	positionAccuracy->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	positionAccuracy->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	positionAccuracy->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*speedAccuracy = (float) atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*timeAccuracy = (float) atof(result);
 
 	return VNERR_NO_ERROR;
@@ -1781,34 +1915,64 @@ VN_ERROR_CODE vn200_getInsSolution(Vn200* vn200, double* gpsTime, unsigned short
 	result = strtok(vn200Int->cmdResponseBuffer, delims);  /* Returns VNRRG */
 	result = strtok(0, delims);                            /* Returns register ID */
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*gpsTime = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*gpsWeek = (unsigned short) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*status = (unsigned short) atoi(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	ypr->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	ypr->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	ypr->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	lattitudeLongitudeAltitude->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c0 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c1 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	nedVelocity->c2 = atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*attitudeUncertainty = (float) atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*positionUncertainty = (float) atof(result);
 	result = strtok(0, delims);
+	if (result == NULL)
+		return VNERR_INVALID_VALUE;
 	*velocityUncertainty = (float) atof(result);
 
 	return VNERR_NO_ERROR;

@@ -291,6 +291,20 @@
  * with the sensor. The library's backend thread is constantly servicing the COM port
  * and when asychronous data is received from the sensor, it saves a copy in memory
  * making it immediately accessible on the call to \ref vn200_getCurrentAsyncData.
+ *
+ * \example vn200_windows_dynamic_dll.c
+ * This example is a conversion of the \ref vn200_windows_basic.c "vn200_windows_basic.c"
+ * so that it uses a dynamically loaded DLL provided by the library. The
+ * Windows API is used via the <tt>windows.h</tt> header file to load the DLL into memory using
+ * the function <tt>LoadLibrary</tt> and then pointers to the functions provided by the
+ * DLL are retrieved individually using the function <tt>GetProcAddress</tt>.
+ *
+ * \example vn100_windows_dynamic_dll.c
+ * This example is a conversion of the \ref vn100_windows_basic.c "vn100_windows_basic.c"
+ * so that it uses a dynamically loaded DLL provided by the library. The
+ * Windows API is used via the <tt>windows.h</tt> header file to load the DLL into memory using
+ * the function <tt>LoadLibrary</tt> and then pointers to the functions provided by the
+ * DLL are retrieved individually using the function <tt>GetProcAddress</tt>.
  */
 #ifndef _VECTORNAV_H_
 #define _VECTORNAV_H_
