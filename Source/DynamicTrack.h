@@ -197,6 +197,12 @@ public:
         aDataStruct.latitudeLongitudeAltitude = LatitudeLongitudeAltitude;
         aDataStruct.velocity = NEDVelocity;
         aDataStruct.ypr = YawPitchRoll;
+		aDataStruct.attitudeUncertainty = AttitudeUncertainty;
+		aDataStruct.positionUncertainty = PositionUncertainty;
+		aDataStruct.velocityUncertainty = VelocityUncertainty;
+		aDataStruct.gpsTimeOfWeek = GPSTime;
+		aDataStruct.gpsWeek = GPSWeek;
+		aDataStruct.gpsFix = GPSFix;
     }
 
     bool Interpolate(cINSLoggedData &aLastCapture, double aElapsedTime) {
