@@ -180,7 +180,13 @@ public:
           LastDataPoint(aLastDataPoint),
           LatitudeLongitudeAltitude(aAllData.latitudeLongitudeAltitude),
           NEDVelocity(aAllData.velocity),
-          YawPitchRoll(aAllData.ypr) {
+          YawPitchRoll(aAllData.ypr),
+          AttitudeUncertainty(aAllData.attitudeUncertainty),
+          PositionUncertainty(aAllData.positionUncertainty),
+          VelocityUncertainty(aAllData.velocityUncertainty),
+          GPSTime(aAllData.gpsTimeOfWeek),
+          GPSWeek(aAllData.gpsWeek),
+          GPSFix(aAllData.gpsFix){
     }
 
     double GetElapsedTime() {
@@ -208,6 +214,10 @@ public:
         YawPitchRoll.yaw = InterpolateCalculation(slope, YawPitchRoll.yaw, aLastCapture.YawPitchRoll.yaw);
         YawPitchRoll.pitch = InterpolateCalculation(slope, YawPitchRoll.pitch, aLastCapture.YawPitchRoll.pitch);
         YawPitchRoll.roll = InterpolateCalculation(slope, YawPitchRoll.roll, aLastCapture.YawPitchRoll.roll);
+		AttitudeUncertainty = (float)InterpolateCalculation(slope, AttitudeUncertainty, aLastCapture.AttitudeUncertainty);
+		PositionUncertainty = (float)InterpolateCalculation(slope, PositionUncertainty, aLastCapture.PositionUncertainty);
+		VelocityUncertainty = (float)InterpolateCalculation(slope, VelocityUncertainty, aLastCapture.VelocityUncertainty);
+		// Do not interpolate GPSTime, GPSWeek or GPSFix, just let them hold at last known value
 
         return true;
     }
@@ -238,6 +248,12 @@ protected:
         aArchive & YawPitchRoll.yaw;
         aArchive & YawPitchRoll.pitch;
         aArchive & YawPitchRoll.roll;
+		aArchive & AttitudeUncertainty;
+		aArchive & PositionUncertainty;
+		aArchive & VelocityUncertainty;
+		aArchive & GPSTime;
+		aArchive & GPSWeek;
+		aArchive & GPSFix;
     }
 
     bool LastDataPoint;
@@ -249,6 +265,7 @@ protected:
     float VelocityUncertainty;
     double GPSTime;
     unsigned short GPSWeek;
+	unsigned char GPSFix;
     double ElapsedTime;
 };
 
@@ -397,9 +414,10 @@ public:
     }
 
     bool CaptureDeviceParameters() {
+		double offset(0.0);
         if (DataLogInEn) {
             // New data is input via a log file;
-            const double elapsedTime = ElapsedTimer.elapsed();
+            const double elapsedTime = ElapsedTimer.elapsed() + offset;
 
             cINSLoggedData stashedCapture;
 
