@@ -22,15 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
 #include <iostream>
 
 #include <DynamicTrack.h>
 
 using namespace std;
 
-int main() {
+int main(int argc, char** argv) {
+	if(argc < 2) {
+		std::cout << "Pass in a COM port or serial device to read from." << std::endl;
+
+		return 1;
+	}
+
     // Create a connection to the device.
-    cDynamicTrack dynamicTrack("COM9", 230400);
+    cDynamicTrack dynamicTrack(argv[1], 230400);
 
     // Setup parameters to track. The app can define the type for
     //  the local storage via the template. Modifiers (e.g. Degrees vs Radians)
@@ -80,7 +90,11 @@ int main() {
 
         cout << endl;
 
-        Sleep(5000);
+#ifdef _WIN32
+        Sleep(1000);
+#else
+		sleep(1);
+#endif
     }
 
     cout << "Hello World!" << endl;
