@@ -23,8 +23,8 @@ endif()
 
 SET(CMAKE_DEBUG_POSTFIX d)
 
-set(Boost_USE_STATIC_LIBS   ON)
-set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_LIBS   ON CACHE BOOL ON)
+set(Boost_USE_MULTITHREADED ON CACHE BOOL ON)
 find_package(Boost REQUIRED COMPONENTS serialization timer)
 
 include_directories(${Boost_INCLUDE_DIRS} DeviceSDKs/VectorNav/CLib0.2/include Source)
