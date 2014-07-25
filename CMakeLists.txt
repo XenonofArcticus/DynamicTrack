@@ -1,7 +1,7 @@
 project(DynamicTrack)
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_BUILD_TYPE DEBUG)
+# set(CMAKE_BUILD_TYPE DEBUG)
 
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
